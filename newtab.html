@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Live New Tab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="newtab.css" />
+</head>
+
+<body>
+
+    <video autoplay muted loop id="bg-video">
+        <source src="assets/video.mp4" type="video/mp4" />
+    </video>
+
+    <div class="container">
+
+        <div class="center-block">
+            <div id="clock">00:00</div>
+
+            <!-- Weather -->
+            <div class="weather-widget">
+
+                <div class="weather-sky"></div>
+
+                <div class="weather-content">
+
+                    <div class="weather-location">
+                        <span>📍</span>
+                        <span id="weather-location">Loading...</span>
+                    </div>
+
+                    <div class="weather-main">
+
+                        <img id="weather-icon" class="weather-icon" />
+
+                        <div>
+                            <div id="weather-temp" class="weather-temp">--°</div>
+                            <div id="weather-condition" class="weather-condition">--</div>
+                        </div>
+
+                    </div>
+
+                    <div class="weather-panels">
+
+                        <div class="weather-panel">
+                            <div class="panel-title">AQI</div>
+                            <div class="panel-value">
+                                <span id="aqi-dot" class="aqi-dot"></span>
+                                <span id="weather-aqi">--</span>
+                            </div>
+                        </div>
+
+                        <div class="weather-panel">
+                            <div class="panel-title">Cloud</div>
+                            <div class="panel-value">
+                                <span id="weather-cloud">--%</span>
+                            </div>
+                            <div class="cloud-bar">
+                                <div id="cloud-fill" class="cloud-fill"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <form class="search-box" action="https://www.google.com/search" method="GET">
+                <input type="text" name="q" placeholder="Search Google..." autofocus />
+            </form>
+        </div>
+
+        <div class="quick-tools" id="quick-tools">
+            <a class="tool-item" href="https://chat.openai.com" target="_blank">
+                <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="">
+                <span class="tool-label">ChatGPT</span>
+            </a>
+
+            <a class="tool-item" href="https://gemini.google.com" target="_blank">
+                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="">
+                <span class="tool-label">Gemini</span>
+            </a>
+
+            <a class="tool-item" href="https://itch.io/jams/" target="_blank">
+                <img src="https://www.google.com/s2/favicons?domain=itch.io&sz=64" />
+                <span>itch jams</span>
+            </a>
+
+            <a class="tool-item" href="https://www.ilovepdf.com/" target="_blank">
+                <img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" />
+                <span>I❤️PDF</span>
+            </a>
+
+            <a class="tool-item" href="https://robertsspaceindustries.com/en/" target="_blank">
+                <img src="https://www.google.com/s2/favicons?domain=robertsspaceindustries.com&sz=64" />
+                <span>RSI</span>
+            </a>
+        </div>
+
+        <div class="links" id="links"></div>
+
+    </div>
+
+    <button id="settings-btn">⚙</button>
+
+    <iframe id="settings-frame" src="/module/settings.html" title="Settings"></iframe>
+
+    <div id="context-menu" class="context-menu">
+        <button data-action="open">Open in new tab</button>
+        <button data-action="edit">Edit</button>
+        <button data-action="remove" class="danger">Remove</button>
+    </div>
+
+    <div id="edit-modal" class="glass-backdrop">
+        <div class="glass-modal">
+
+            <div class="glass-header">
+                <h3>Edit Favorite</h3>
+            </div>
+
+            <div class="glass-icon-row">
+                <div class="glass-icon">
+                    <img id="edit-icon-preview" />
+                </div>
+
+                <label class="glass-upload">
+                    Change Icon
+                    <input type="file" id="edit-icon" accept="image/*" hidden />
+                </label>
+            </div>
+
+            <div class="glass-field">
+                <label>Name</label>
+                <input type="text" id="edit-name" />
+            </div>
+
+            <div class="glass-field">
+                <label>URL</label>
+                <input type="url" id="edit-url" />
+            </div>
+
+            <div class="glass-colors-row">
+                <div class="glass-color-item">
+                    <span class="glass-color-label">Card Color</span>
+                    <label class="glass-color-picker">
+                        <input type="color" id="edit-color" />
+                        <span class="color-preview"></span>
+                    </label>
+                </div>
+
+                <div class="glass-color-item">
+                    <span class="glass-color-label">Text Color</span>
+                    <label class="glass-color-picker">
+                        <input type="color" id="edit-text-color" />
+                        <span class="color-preview"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="glass-actions">
+                <button id="cancel-edit" class="glass-btn ghost">Cancel</button>
+                <button id="save-edit" class="glass-btn primary">Save</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="newtab.js"></script>
+</body>
+
+</html>

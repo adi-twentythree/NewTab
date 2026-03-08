@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+
+<body>
+
+  <div class="settings-root">
+    <section class="add-section">
+      <h3>Add Favorite</h3>
+
+      <div class="add-card">
+        <div class="add-field">
+          <input type="text" id="name" placeholder="Name" />
+        </div>
+
+        <div class="add-field">
+          <input type="url" id="url" placeholder="https://example.com" />
+        </div>
+
+        <div class="add-controls">
+          <label class="color-pill">
+            <input type="color" id="color" />
+            <span></span>
+          </label>
+
+          <label class="icon-pill">
+            Icon
+            <input type="file" id="icon" accept="image/*" hidden />
+          </label>
+        </div>
+
+        <button id="add-btn" class="primary">Add</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="settings.js"></script>
+
+</body>
+
+</html>
