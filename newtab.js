@@ -26,17 +26,17 @@ function ensureIds(links) {
 function getPositions(container) {
     const map = new Map();
     [...container.children].forEach(el =>
-        map.set(el, el.getBoundingClientRect())
+        map.set(el.dataset.id, el.getBoundingClientRect())
     );
     return map;
 }
 
 function animateReorder(container, oldPos) {
     [...container.children].forEach(el => {
-        const newPos = el.getBoundingClientRect();
-        const old = oldPos.get(el);
+        const old = oldPos.get(el.dataset.id);
         if (!old) return;
 
+        const newPos = el.getBoundingClientRect();
         const dx = old.left - newPos.left;
         const dy = old.top - newPos.top;
 
@@ -53,20 +53,15 @@ function animateReorder(container, oldPos) {
 
 /* ─── CLOCK ─────────────────────────────────────────────────────────────── */
 
-// FIX: Guard against clock element not yet existing on early calls
 function updateClock() {
     const clockEl = document.getElementById("clock");
     if (!clockEl) return;
-
     clockEl.textContent = new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit"
     });
-
     clockEl.classList.add("visible");
 }
-
-// FIX: Defer clock start until DOM is ready (handled in DOMContentLoaded below)
 
 /* ─── WEATHER ────────────────────────────────────────────────────────────── */
 
@@ -79,7 +74,6 @@ async function loadWeather() {
     navigator.geolocation.getCurrentPosition(
         async pos => {
             const { latitude: lat, longitude: lon } = pos.coords;
-
             try {
                 /* Weather */
                 const weatherRes = await fetch(
@@ -100,25 +94,26 @@ async function loadWeather() {
                 document.getElementById("weather-cloud").textContent = cloud + "%";
                 document.getElementById("cloud-fill").style.width = cloud + "%";
 
-                /* AQI — FIX: was missing await + .json() parse, aqiData was never defined */
                 const aqiRes = await fetch(
                     `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`
                 );
-                const aqiData = await aqiRes.json(); // ← was missing entirely
-
+                const aqiData = await aqiRes.json();
                 const aqi = aqiData.list[0].main.aqi;
                 const dot = document.getElementById("aqi-dot");
 
                 const aqiMap = {
-                    1: { label: "Good", class: "aqi-good" },
-                    2: { label: "Fair", class: "aqi-fair" },
-                    3: { label: "Moderate", class: "aqi-moderate" },
-                    4: { label: "Poor", class: "aqi-poor" },
-                    5: { label: "Bad", class: "aqi-bad" }
+                    1: { label: "Good", cls: "aqi-good" },
+                    2: { label: "Fair", cls: "aqi-fair" },
+                    3: { label: "Moderate", cls: "aqi-moderate" },
+                    4: { label: "Poor", cls: "aqi-poor" },
+                    5: { label: "Bad", cls: "aqi-bad" }
                 };
 
                 document.getElementById("weather-aqi").textContent = aqiMap[aqi].label;
-                dot.classList.add(aqiMap[aqi].class);
+                dot.className = `aqi-dot ${aqiMap[aqi].cls}`;
+
+                document.querySelector(".weather-widget")
+                    ?.classList.add("visible");
 
             } catch (err) {
                 console.warn("Weather/AQI fetch failed:", err);
@@ -139,7 +134,7 @@ const defaultLinks = [
 
 /* ─── LOAD FAVORITES ─────────────────────────────────────────────────────── */
 
-function loadLinks() {
+function loadLinks(afterRender) {
     chrome.storage.sync.get(["links"], result => {
         const links = ensureIds(result.links || defaultLinks);
         const container = document.getElementById(LINKS_CONTAINER_ID);
@@ -152,6 +147,7 @@ function loadLinks() {
             card.className = "favorite-card";
             card.href = link.url;
             card.draggable = true;
+            card.dataset.id = link.id;
 
             if (link.color) card.style.background = link.color;
             if (link.textColor) card.style.color = link.textColor;
@@ -173,7 +169,7 @@ function loadLinks() {
             /* Context menu */
             card.addEventListener("contextmenu", e => {
                 e.preventDefault();
-                activeIndex = index;
+                activeIndex = link.id;
 
                 const menuWidth = 180;
                 const menuHeight = 120;
@@ -216,23 +212,32 @@ function loadLinks() {
                 const [moved] = updated.splice(dragIndex, 1);
                 updated.splice(index, 0, moved);
 
-                // FIX: call loadLinks() after save so DOM stays in sync,
-                // then animate based on the freshly rendered positions
                 chrome.storage.sync.set({ links: updated }, () => {
                     activeIndex = null;
-                    loadLinks();
-                    requestAnimationFrame(() => animateReorder(container, oldPos));
+                    pendingAnimateOldPos = oldPos;
                 });
             });
         });
+
+        if (typeof afterRender === "function") afterRender(container);
     });
 }
 
-/* ─── LIVE STORAGE SYNC ──────────────────────────────────────────────────── */
+/* ─── PENDING ANIMATE STATE ──────────────────────────────────────────────── */
 
-// FIX: Re-render links whenever settings.js (or any other context) saves new data
+let pendingAnimateOldPos = null;
+
+/* ─── LIVE STORAGE SYNC ──────────────────────────────────────────────────── */
 chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "sync" && changes.links) {
+    if (area !== "sync" || !changes.links) return;
+
+    if (pendingAnimateOldPos) {
+        const snapshot = pendingAnimateOldPos;
+        pendingAnimateOldPos = null;
+        loadLinks(container => {
+            requestAnimationFrame(() => animateReorder(container, snapshot));
+        });
+    } else {
         loadLinks();
     }
 });
@@ -240,8 +245,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
 /* ─── DOM READY ──────────────────────────────────────────────────────────── */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    // FIX: All DOM-dependent init is now safely inside DOMContentLoaded
 
     /* Grab DOM refs */
     contextMenu = document.getElementById("context-menu");
@@ -258,6 +261,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingsBtn = document.getElementById("settings-btn");
     const settingsFrame = document.getElementById("settings-frame");
 
+    /* ── Search (replaces <form> — fires on Enter only) ── */
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) {
+        searchInput.addEventListener("keydown", e => {
+            if (e.key !== "Enter") return;
+            const q = searchInput.value.trim();
+            if (!q) return;
+            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+        });
+    }
+
     /* ── Clock ── */
     updateClock();
     setInterval(updateClock, 1000);
@@ -267,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ── Initial link load ── */
     chrome.storage.sync.get(["links"], res => {
-        if (!res.links) chrome.storage.sync.set({ links: defaultLinks }, loadLinks);
+        if (!res.links) chrome.storage.sync.set({ links: defaultLinks });
         else loadLinks();
     });
 
@@ -321,17 +335,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chrome.storage.sync.get(["links"], res => {
             const links = res.links || [];
-            const item = links[activeIndex];
+            const itemIndex = links.findIndex(l => l.id === activeIndex);
+            if (itemIndex === -1) return;
+            const item = links[itemIndex];
 
             if (btn.dataset.action === "open") {
                 window.open(item.url, "_blank");
             }
 
             if (btn.dataset.action === "remove") {
-                const removedId = item.id;
-                links.splice(activeIndex, 1);
-                chrome.storage.sync.set({ links }, loadLinks); // FIX: refresh after remove
-                chrome.storage.local.remove(`icon_${removedId}`);
+                links.splice(itemIndex, 1);
+                chrome.storage.sync.set({ links });
+                chrome.storage.local.remove(`icon_${item.id}`);
             }
 
             if (btn.dataset.action === "edit") {
@@ -373,7 +388,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chrome.storage.sync.get(["links"], res => {
             const links = res.links || [];
-            const item = links[activeIndex];
+            const itemIndex = links.findIndex(l => l.id === activeIndex);
+            if (itemIndex === -1) return;
+            const item = links[itemIndex];
 
             Object.assign(item, {
                 name: editName.value.trim(),
@@ -390,7 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 editModal.style.display = "none";
                 activeIndex = null;
                 pendingIcon = null;
-                loadLinks(); // FIX: refresh after edit save
             });
         });
     });

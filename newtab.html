@@ -17,6 +17,7 @@
     <div class="container">
 
         <div class="center-block">
+
             <div id="clock">00:00</div>
 
             <!-- Weather -->
@@ -32,14 +33,11 @@
                     </div>
 
                     <div class="weather-main">
-
-                        <img id="weather-icon" class="weather-icon" />
-
+                        <img id="weather-icon" class="weather-icon" alt="weather icon" />
                         <div>
                             <div id="weather-temp" class="weather-temp">--°</div>
                             <div id="weather-condition" class="weather-condition">--</div>
                         </div>
-
                     </div>
 
                     <div class="weather-panels">
@@ -68,37 +66,35 @@
 
             </div>
 
+            <div class="search-box">
+                <input id="search-input" type="text" placeholder="Search Google..." autofocus autocomplete="off" />
+            </div>
 
-
-
-            <form class="search-box" action="https://www.google.com/search" method="GET">
-                <input type="text" name="q" placeholder="Search Google..." autofocus />
-            </form>
         </div>
 
         <div class="quick-tools" id="quick-tools">
             <a class="tool-item" href="https://chat.openai.com" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="">
+                <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="ChatGPT" />
                 <span class="tool-label">ChatGPT</span>
             </a>
 
             <a class="tool-item" href="https://gemini.google.com" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="">
+                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini" />
                 <span class="tool-label">Gemini</span>
             </a>
 
             <a class="tool-item" href="https://itch.io/jams/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=itch.io&sz=64" />
+                <img src="https://www.google.com/s2/favicons?domain=itch.io&sz=64" alt="itch.io" />
                 <span>itch jams</span>
             </a>
 
             <a class="tool-item" href="https://www.ilovepdf.com/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" />
+                <img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" alt="ilovepdf" />
                 <span>I❤️PDF</span>
             </a>
 
             <a class="tool-item" href="https://robertsspaceindustries.com/en/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=robertsspaceindustries.com&sz=64" />
+                <img src="https://www.google.com/s2/favicons?domain=robertsspaceindustries.com&sz=64" alt="RSI" />
                 <span>RSI</span>
             </a>
         </div>
@@ -107,9 +103,9 @@
 
     </div>
 
-    <button id="settings-btn">⚙</button>
+    <button id="settings-btn" aria-label="Settings">⚙</button>
 
-    <iframe id="settings-frame" src="/module/settings.html" title="Settings"></iframe>
+    <iframe id="settings-frame" src="module/settings.html" title="Settings"></iframe>
 
     <div id="context-menu" class="context-menu">
         <button data-action="open">Open in new tab</button>
@@ -126,9 +122,8 @@
 
             <div class="glass-icon-row">
                 <div class="glass-icon">
-                    <img id="edit-icon-preview" />
+                    <img id="edit-icon-preview" alt="icon preview" />
                 </div>
-
                 <label class="glass-upload">
                     Change Icon
                     <input type="file" id="edit-icon" accept="image/*" hidden />
@@ -136,13 +131,13 @@
             </div>
 
             <div class="glass-field">
-                <label>Name</label>
-                <input type="text" id="edit-name" />
+                <label for="edit-name">Name</label>
+                <input type="text" id="edit-name" autocomplete="off" />
             </div>
 
             <div class="glass-field">
-                <label>URL</label>
-                <input type="url" id="edit-url" />
+                <label for="edit-url">URL</label>
+                <input type="url" id="edit-url" autocomplete="off" />
             </div>
 
             <div class="glass-colors-row">
@@ -153,7 +148,6 @@
                         <span class="color-preview"></span>
                     </label>
                 </div>
-
                 <div class="glass-color-item">
                     <span class="glass-color-label">Text Color</span>
                     <label class="glass-color-picker">
