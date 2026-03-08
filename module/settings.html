@@ -22,7 +22,7 @@
         </div>
         <div class="add-controls">
           <label class="color-pill">
-            <input type="color" id="color" />
+            <input type="color" id="color" value="#1a1a1a" />
             <span></span>
           </label>
           <label class="icon-pill">
@@ -48,6 +48,21 @@
           <button id="reset-bg-btn" class="ghost-btn">↩ Reset</button>
           <button id="apply-bg-btn" class="primary-btn apply-btn" disabled>Apply</button>
         </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="add-section">
+      <h3>Weather API Key</h3>
+      <div class="add-card">
+        <div class="add-field">
+          <input type="text" id="api-key-input" placeholder="Paste OpenWeatherMap key…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="api-key-hint">
+          Get a free key at <span class="api-link">openweathermap.org</span>
+        </div>
+        <button id="save-api-btn" class="primary-btn">Save Key</button>
       </div>
     </section>
 

@@ -1,16 +1,21 @@
-const nameInput = document.getElementById("name");
-const urlInput = document.getElementById("url");
-const colorInput = document.getElementById("color");
-const iconInput = document.getElementById("icon");
-const addBtn = document.getElementById("add-btn");
+const nameInput   = document.getElementById("name");
+const urlInput    = document.getElementById("url");
+const colorInput  = document.getElementById("color");
+const iconInput   = document.getElementById("icon");
+const addBtn      = document.getElementById("add-btn");
 const colorPreview = document.querySelector(".color-pill span");
 
-const bgInput = document.getElementById("bg-input");
-const bgLabelText = document.getElementById("bg-label-text");
+const bgInput       = document.getElementById("bg-input");
+const bgLabelText   = document.getElementById("bg-label-text");
 const bgUploadLabel = document.getElementById("bg-upload-label");
-const bgUploadIcon = document.getElementById("bg-upload-icon");
-const resetBgBtn = document.getElementById("reset-bg-btn");
-const applyBgBtn = document.getElementById("apply-bg-btn");
+const bgUploadIcon  = document.getElementById("bg-upload-icon");
+const resetBgBtn    = document.getElementById("reset-bg-btn");
+const applyBgBtn    = document.getElementById("apply-bg-btn");
+
+const apiKeyInput = document.getElementById("api-key-input");
+const saveApiBtn  = document.getElementById("save-api-btn");
+
+const DEFAULT_COLOR = "#1a1a1a";
 
 /* ─── Color preview ─────────────────────────────────────────────────────── */
 
@@ -21,10 +26,10 @@ colorInput.addEventListener("input", () => {
 /* ─── Add Favorite ──────────────────────────────────────────────────────── */
 
 addBtn.addEventListener("click", async () => {
-  const name = nameInput.value.trim();
-  const url = urlInput.value.trim();
+  const name  = nameInput.value.trim();
+  const url   = urlInput.value.trim();
   const color = colorInput.value;
-  const file = iconInput.files[0];
+  const file  = iconInput.files[0];
 
   if (!name || !url) return;
 
@@ -33,15 +38,18 @@ addBtn.addEventListener("click", async () => {
 
   chrome.storage.sync.get(["links"], result => {
     const links = result.links || [];
-    links.push({ id: crypto.randomUUID(), name, url, color, textColor: "#ffffff" });
+    const newId = crypto.randomUUID();
+    links.push({ id: newId, name, url, color, textColor: "#ffffff" });
 
     chrome.storage.sync.set({ links }, () => {
-      if (icon) {
-        chrome.storage.local.set({ [`icon_${links[links.length - 1].id}`]: icon });
-      }
-      nameInput.value = "";
-      urlInput.value = "";
-      iconInput.value = "";
+      if (icon) chrome.storage.local.set({ [`icon_${newId}`]: icon });
+
+      // FIX: reset all fields including color picker after successful add
+      nameInput.value  = "";
+      urlInput.value   = "";
+      iconInput.value  = "";
+      colorInput.value = DEFAULT_COLOR;
+      colorPreview.style.background = DEFAULT_COLOR;
     });
   });
 });
@@ -90,7 +98,6 @@ async function deleteBgFromIDB() {
 bgInput.addEventListener("change", () => {
   const file = bgInput.files[0];
   if (!file) return;
-
   bgLabelText.textContent = file.name;
   bgUploadLabel.classList.add("has-file");
   bgUploadIcon.textContent = file.type.startsWith("video") ? "🎬" : "🖼";
@@ -108,8 +115,8 @@ applyBgBtn.addEventListener("click", async () => {
 
   await saveBgToIDB(file);
 
-  // Tell the parent tab to apply the new background immediately
-  window.parent.postMessage({ type: "apply-background" }, "*");
+  // FIX: only accept messages from our own extension origin
+  window.parent.postMessage({ type: "apply-background" }, chrome.runtime.getURL("").slice(0, -1));
 
   applyBgBtn.textContent = "Applied ✓";
   setTimeout(() => {
@@ -122,7 +129,7 @@ applyBgBtn.addEventListener("click", async () => {
 
 resetBgBtn.addEventListener("click", async () => {
   await deleteBgFromIDB();
-  window.parent.postMessage({ type: "reset-background" }, "*");
+  window.parent.postMessage({ type: "reset-background" }, chrome.runtime.getURL("").slice(0, -1));
 
   bgLabelText.textContent = "Choose image or video…";
   bgUploadLabel.classList.remove("has-file");
@@ -143,12 +150,34 @@ resetBgBtn.addEventListener("click", async () => {
       req.onsuccess = () => resolve(req.result || null);
       req.onerror = () => reject(req.error);
     });
-
     if (file) {
       bgLabelText.textContent = file.name || "Custom background set";
       bgUploadLabel.classList.add("has-file");
-      bgUploadIcon.textContent = file.type && file.type.startsWith("video") ? "🎬" : "🖼";
-      // Don't enable Apply — no new file selected yet
+      bgUploadIcon.textContent = file.type?.startsWith("video") ? "🎬" : "🖼";
     }
   } catch (_) { /* no existing bg */ }
 })();
+
+/* ─── API Key: load saved key ───────────────────────────────────────────── */
+
+chrome.storage.sync.get(["weatherApiKey"], res => {
+  if (res.weatherApiKey) {
+    // Show masked version — only last 4 chars visible
+    const key = res.weatherApiKey;
+    apiKeyInput.placeholder = "••••••••••••••••••••" + key.slice(-4);
+  }
+});
+
+/* ─── API Key: save ─────────────────────────────────────────────────────── */
+
+saveApiBtn.addEventListener("click", () => {
+  const key = apiKeyInput.value.trim();
+  if (!key) return;
+
+  chrome.storage.sync.set({ weatherApiKey: key }, () => {
+    saveApiBtn.textContent = "Saved ✓";
+    apiKeyInput.value = "";
+    apiKeyInput.placeholder = "••••••••••••••••••••" + key.slice(-4);
+    setTimeout(() => { saveApiBtn.textContent = "Save Key"; }, 1800);
+  });
+});
