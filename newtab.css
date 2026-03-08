@@ -236,13 +236,8 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.context-menu .danger {
-  color: #ff6b6b;
-}
-
-.context-menu .danger:hover {
-  background: rgba(255, 107, 107, 0.15);
-}
+.context-menu .danger       { color: #ff6b6b; }
+.context-menu .danger:hover { background: rgba(255, 107, 107, 0.15); }
 
 /* ── Edit modal ─────────────────────────────────────────────────────────── */
 
@@ -269,15 +264,8 @@ body {
 }
 
 @keyframes glassIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
 .glass-header h3 {
@@ -480,19 +468,24 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: white;
   font-family: "Inter", sans-serif;
+  /* Widget starts hidden; JS adds .visible once weather data is loaded */
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.25s ease;
 }
 
-.weather-widget:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
 .weather-widget.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* FIX: hover is scoped to .visible so it only applies after the widget has
+   fully appeared, preventing a transform conflict during the animate-in.
+   Previously .weather-widget:hover was declared before .weather-widget.visible,
+   causing translateY(-3px) to fight with the fade-in translateY(0). */
+.weather-widget.visible:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .weather-sky {
@@ -506,15 +499,8 @@ body {
 }
 
 @keyframes sunPulse {
-
-  0%,
-  100% {
-    opacity: 0.9;
-  }
-
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.9; }
+  50%       { opacity: 1;   }
 }
 
 .weather-content {
@@ -590,25 +576,11 @@ body {
   border-radius: 50%;
 }
 
-.aqi-good {
-  background: #2ecc71;
-}
-
-.aqi-fair {
-  background: #f1c40f;
-}
-
-.aqi-moderate {
-  background: #e67e22;
-}
-
-.aqi-poor {
-  background: #e74c3c;
-}
-
-.aqi-bad {
-  background: #c0392b;
-}
+.aqi-good     { background: #2ecc71; }
+.aqi-fair     { background: #f1c40f; }
+.aqi-moderate { background: #e67e22; }
+.aqi-poor     { background: #e74c3c; }
+.aqi-bad      { background: #c0392b; }
 
 .cloud-bar {
   height: 4px;
