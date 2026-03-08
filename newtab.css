@@ -24,10 +24,18 @@ body {
   z-index: -2;
 }
 
+/* FIX: overlay now has an actual purpose — subtle dark vignette so text is
+   always readable regardless of background brightness */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: -1;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  pointer-events: none;
 }
 
 .container {
@@ -50,25 +58,28 @@ body {
 
 /* ── Clock ─────────────────────────────────────────────────────────────── */
 
+/* FIX: clock moved out of center-block in HTML so it no longer leaves a
+   ghost gap in the flex layout. Font bumped to 15px — more readable. */
 #clock {
   position: fixed;
   top: 20px;
   left: 20px;
-  padding: 8px 14px;
+  padding: 9px 16px;
   border-radius: 12px;
   font-family: "Space Grotesk", "Inter", sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #fff;
   display: flex;
   align-items: center;
   gap: 6px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-  z-index: 10;
+  z-index: 20;
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.25s ease, transform 0.25s ease;
@@ -93,14 +104,24 @@ body {
   border-radius: 14px;
   font-size: 17px;
   color: #ffffff;
-  border: none;
+  /* FIX: add a visible border so there's always a baseline shape */
+  border: 1px solid rgba(255, 255, 255, 0.14);
   outline: none;
   background: rgba(255, 255, 255, 0.066);
   backdrop-filter: blur(14px);
+  caret-color: #5ddcff;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* FIX: focus ring so the user knows when they're typing */
+.search-box input:focus {
+  border-color: rgba(93, 220, 255, 0.55);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 0 3px rgba(55, 195, 255, 0.15);
 }
 
 .search-box input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* ── Favorites grid ─────────────────────────────────────────────────────── */
@@ -116,6 +137,7 @@ body {
 }
 
 .favorite-card {
+  position: relative;        /* needed for ::after overlay */
   height: 96px;
   padding: 16px;
   border-radius: 14px;
@@ -128,14 +150,30 @@ body {
   text-decoration: none;
   color: #ffffff;
   backdrop-filter: blur(14px);
-  transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  overflow: hidden;          /* clips the ::after pseudo-overlay */
+  transition: transform 220ms ease, box-shadow 220ms ease;
   will-change: transform;
+}
+
+/* FIX: hover no longer slams a dark background on top of custom card colors.
+   Instead a translucent white sheen lifts brightness while preserving hue. */
+.favorite-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0);
+  transition: background 220ms ease;
+  pointer-events: none;
 }
 
 .favorite-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
-  background: rgba(45, 45, 45, 0.95);
+}
+
+.favorite-card:hover::after {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .favorite-card.dragging {
@@ -150,12 +188,16 @@ body {
 .favorite-card img {
   width: 28px;
   height: 28px;
+  position: relative;  /* sits above ::after overlay */
+  z-index: 1;
 }
 
 .favorite-card span {
   font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 14px;
   opacity: 0.9;
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Settings button ────────────────────────────────────────────────────── */
@@ -167,34 +209,43 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
+  /* FIX: add subtle border to match glass family */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
   font-size: 20px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  z-index: 10;
+  backdrop-filter: blur(14px);
+  z-index: 30;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: background 0.18s ease, transform 0.15s ease;
 }
 
 #settings-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.06);
 }
 
 /* ── Settings iframe ────────────────────────────────────────────────────── */
 
 #settings-frame {
   position: fixed;
-  bottom: 80px;
+  bottom: 76px;
   right: 20px;
-  width: 320px;
-  height: 290px;
-  border-radius: 18px;
+  width: 300px;
+  height: 430px;
+  border-radius: 20px;
   border: none;
+  /* FIX: shadow on the iframe element itself so it isn't clipped by the
+     iframe's own overflow boundary. The panel inside no longer needs its own
+     box-shadow. */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255,255,255,0.1);
   overflow: hidden;
   opacity: 0;
   transform: translateY(10px) scale(0.96);
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.25s ease;
+  z-index: 25;
 }
 
 #settings-frame.open {
@@ -209,14 +260,15 @@ body {
   position: fixed;
   display: none;
   flex-direction: column;
-  background: rgba(10, 10, 10, 0.941);
-  backdrop-filter: blur(18px);
+  background: rgba(18, 18, 18, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #fff;
-  animation: glassIn 0.25s ease;
-  border-radius: 10px;
+  animation: glassIn 0.2s ease;
+  border-radius: 12px;
   padding: 6px;
   min-width: 180px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   z-index: 999;
 }
 
@@ -230,21 +282,27 @@ body {
   font-family: "Space Grotesk", "Inter", sans-serif;
   cursor: pointer;
   border-radius: 6px;
+  transition: background 0.15s ease;
 }
 
 .context-menu button:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.context-menu .danger       { color: #ff6b6b; }
-.context-menu .danger:hover { background: rgba(255, 107, 107, 0.15); }
+.context-menu .danger {
+  color: #ff6b6b;
+}
+
+.context-menu .danger:hover {
+  background: rgba(255, 107, 107, 0.15);
+}
 
 /* ── Edit modal ─────────────────────────────────────────────────────────── */
 
 .glass-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   display: none;
   align-items: center;
@@ -256,16 +314,23 @@ body {
   width: 380px;
   padding: 22px;
   border-radius: 20px;
-  background: rgba(10, 10, 10, 0.941);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: rgba(14, 14, 14, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   color: #fff;
   animation: glassIn 0.25s ease;
 }
 
 @keyframes glassIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .glass-header h3 {
@@ -285,7 +350,8 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -312,17 +378,29 @@ body {
 
 .glass-field label {
   font-size: 12px;
-  opacity: 0.75;
+  opacity: 0.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 11px;
 }
 
+/* FIX: edit modal inputs now have a border and a visible focus ring */
 .glass-field input {
   padding: 10px 12px;
   border-radius: 12px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   outline: none;
   font-size: 14px;
   color: #fff;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  caret-color: #5ddcff;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.glass-field input:focus {
+  border-color: rgba(93, 220, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(55, 195, 255, 0.12);
 }
 
 .glass-colors-row {
@@ -339,8 +417,10 @@ body {
 }
 
 .glass-color-label {
-  font-size: 12px;
-  opacity: 0.75;
+  font-size: 11px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .glass-color-picker {
@@ -350,15 +430,16 @@ body {
   height: 40px;
   border-radius: 999px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 8px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .glass-color-picker:hover {
   transform: translateY(-1px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 10px 26px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
 .glass-color-picker input {
@@ -373,12 +454,12 @@ body {
   inset: 5px;
   border-radius: 999px;
   background: var(--color, #ffffff);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
   transition: transform 0.15s ease;
 }
 
 .glass-color-picker:active .color-preview {
-  transform: scale(0.96);
+  transform: scale(0.94);
 }
 
 .glass-actions {
@@ -388,11 +469,18 @@ body {
 }
 
 .glass-btn {
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 12px;
   border: none;
   cursor: pointer;
   font-size: 14px;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  transition: opacity 0.18s ease, transform 0.15s ease;
+}
+
+.glass-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
 }
 
 .glass-btn.primary {
@@ -402,8 +490,9 @@ body {
 }
 
 .glass-btn.ghost {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .glass-header h3,
@@ -419,7 +508,8 @@ body {
   max-width: 860px;
   display: flex;
   gap: 14px;
-  justify-content: left;
+  /* FIX: "left" is not a valid justify-content value → flex-start */
+  justify-content: flex-start;
   flex-wrap: wrap;
   margin-top: 24px;
   margin-bottom: 18px;
@@ -431,25 +521,25 @@ body {
   gap: 10px;
   padding: 10px 14px;
   border-radius: 999px;
-  background: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   color: #000;
   font-size: 13px;
+  font-family: "Space Grotesk", "Inter", sans-serif;
   text-decoration: none;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
-    0 6px 18px rgba(0, 0, 0, 0.25);
-  transition: transform 0.18s ease, background 0.18s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .tool-item img {
   width: 18px;
   height: 18px;
-  border-radius: 999px;
+  border-radius: 4px;
 }
 
 .tool-item:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
 }
 
 /* ── Weather widget ─────────────────────────────────────────────────────── */
@@ -468,24 +558,21 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: white;
   font-family: "Inter", sans-serif;
-  /* Widget starts hidden; JS adds .visible once weather data is loaded */
+  /* FIX: explicit z-index so the weather widget isn't buried by other layers */
+  z-index: 20;
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.25s ease;
 }
 
+.weather-widget:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
 .weather-widget.visible {
   opacity: 1;
   transform: translateY(0);
-}
-
-/* FIX: hover is scoped to .visible so it only applies after the widget has
-   fully appeared, preventing a transform conflict during the animate-in.
-   Previously .weather-widget:hover was declared before .weather-widget.visible,
-   causing translateY(-3px) to fight with the fade-in translateY(0). */
-.weather-widget.visible:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .weather-sky {
@@ -500,7 +587,7 @@ body {
 
 @keyframes sunPulse {
   0%, 100% { opacity: 0.9; }
-  50%       { opacity: 1;   }
+  50% { opacity: 1; }
 }
 
 .weather-content {

@@ -10,38 +10,50 @@
 <body>
 
   <div class="settings-root">
+
     <section class="add-section">
       <h3>Add Favorite</h3>
-
       <div class="add-card">
         <div class="add-field">
           <input type="text" id="name" placeholder="Name" />
         </div>
-
         <div class="add-field">
           <input type="url" id="url" placeholder="https://example.com" />
         </div>
-
         <div class="add-controls">
           <label class="color-pill">
             <input type="color" id="color" />
             <span></span>
           </label>
-
           <label class="icon-pill">
             Icon
             <input type="file" id="icon" accept="image/*" hidden />
           </label>
         </div>
+        <button id="add-btn" class="primary-btn">Add</button>
+      </div>
+    </section>
 
-        <button id="add-btn" class="primary">Add</button>
+    <div class="section-divider"></div>
+
+    <section class="add-section">
+      <h3>Background</h3>
+      <div class="add-card">
+        <label class="bg-upload-label" id="bg-upload-label">
+          <input type="file" id="bg-input" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" hidden />
+          <span class="bg-upload-icon" id="bg-upload-icon">🖼</span>
+          <span id="bg-label-text">Choose image or video…</span>
+        </label>
+        <div class="bg-actions">
+          <button id="reset-bg-btn" class="ghost-btn">↩ Reset</button>
+          <button id="apply-bg-btn" class="primary-btn apply-btn" disabled>Apply</button>
+        </div>
       </div>
     </section>
 
   </div>
 
   <script src="settings.js"></script>
-
 </body>
 
 </html>

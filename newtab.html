@@ -14,62 +14,55 @@
         <source src="assets/video.mp4" type="video/mp4" />
     </video>
 
+    <!-- FIX: overlay is now a real vignette layer, not dead markup -->
+    <div class="overlay"></div>
+
+    <!-- FIX: clock moved here — position:fixed but was inside center-block,
+         leaving a ghost flex gap. Now a true sibling at the root level. -->
+    <div id="clock">00:00</div>
+
+    <!-- Weather widget — fixed position, lives outside scroll flow -->
+    <div class="weather-widget">
+        <div class="weather-sky"></div>
+        <div class="weather-content">
+            <div class="weather-location">
+                <span>📍</span>
+                <span id="weather-location">Loading...</span>
+            </div>
+            <div class="weather-main">
+                <img id="weather-icon" class="weather-icon" alt="weather icon" />
+                <div>
+                    <div id="weather-temp" class="weather-temp">--°</div>
+                    <div id="weather-condition" class="weather-condition">--</div>
+                </div>
+            </div>
+            <div class="weather-panels">
+                <div class="weather-panel">
+                    <div class="panel-title">AQI</div>
+                    <div class="panel-value">
+                        <span id="aqi-dot" class="aqi-dot"></span>
+                        <span id="weather-aqi">--</span>
+                    </div>
+                </div>
+                <div class="weather-panel">
+                    <div class="panel-title">Cloud</div>
+                    <div class="panel-value">
+                        <span id="weather-cloud">--%</span>
+                    </div>
+                    <div class="cloud-bar">
+                        <div id="cloud-fill" class="cloud-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
 
         <div class="center-block">
-
-            <div id="clock">00:00</div>
-
-            <!-- Weather -->
-            <div class="weather-widget">
-
-                <div class="weather-sky"></div>
-
-                <div class="weather-content">
-
-                    <div class="weather-location">
-                        <span>📍</span>
-                        <span id="weather-location">Loading...</span>
-                    </div>
-
-                    <div class="weather-main">
-                        <img id="weather-icon" class="weather-icon" alt="weather icon" />
-                        <div>
-                            <div id="weather-temp" class="weather-temp">--°</div>
-                            <div id="weather-condition" class="weather-condition">--</div>
-                        </div>
-                    </div>
-
-                    <div class="weather-panels">
-
-                        <div class="weather-panel">
-                            <div class="panel-title">AQI</div>
-                            <div class="panel-value">
-                                <span id="aqi-dot" class="aqi-dot"></span>
-                                <span id="weather-aqi">--</span>
-                            </div>
-                        </div>
-
-                        <div class="weather-panel">
-                            <div class="panel-title">Cloud</div>
-                            <div class="panel-value">
-                                <span id="weather-cloud">--%</span>
-                            </div>
-                            <div class="cloud-bar">
-                                <div id="cloud-fill" class="cloud-fill"></div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
             <div class="search-box">
                 <input id="search-input" type="text" placeholder="Search Google..." autofocus autocomplete="off" />
             </div>
-
         </div>
 
         <div class="quick-tools" id="quick-tools">
@@ -77,22 +70,18 @@
                 <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="ChatGPT" />
                 <span class="tool-label">ChatGPT</span>
             </a>
-
             <a class="tool-item" href="https://gemini.google.com" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini" />
                 <span class="tool-label">Gemini</span>
             </a>
-
             <a class="tool-item" href="https://itch.io/jams/" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=itch.io&sz=64" alt="itch.io" />
                 <span>itch jams</span>
             </a>
-
             <a class="tool-item" href="https://www.ilovepdf.com/" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" alt="ilovepdf" />
                 <span>I❤️PDF</span>
             </a>
-
             <a class="tool-item" href="https://robertsspaceindustries.com/en/" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=robertsspaceindustries.com&sz=64" alt="RSI" />
                 <span>RSI</span>
