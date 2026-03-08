@@ -6,8 +6,21 @@
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["storage", "geolocation"],
+  "permissions": [
+    "storage",
+    "topSites"
+  ],
+  "host_permissions": [
+    "https://api.openweathermap.org/*",
+    "https://www.google.com/*",
+    "https://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon.png"
   }
 }

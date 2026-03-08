@@ -9,7 +9,8 @@ let saveEditBtn, cancelEditBtn;
 
 const LINKS_CONTAINER_ID = "links";
 
-/* UTILITIES */
+/* ─── UTILITIES ─────────────────────────────────────────────────────────── */
+
 function ensureIds(links) {
     let changed = false;
     links.forEach(link => {
@@ -50,7 +51,9 @@ function animateReorder(container, oldPos) {
     });
 }
 
-/* CLOCK */
+/* ─── CLOCK ─────────────────────────────────────────────────────────────── */
+
+// FIX: Guard against clock element not yet existing on early calls
 function updateClock() {
     const clockEl = document.getElementById("clock");
     if (!clockEl) return;
@@ -63,81 +66,70 @@ function updateClock() {
     clockEl.classList.add("visible");
 }
 
-setInterval(updateClock, 1000);
+// FIX: Defer clock start until DOM is ready (handled in DOMContentLoaded below)
 
-/* WEATHER */
+/* ─── WEATHER ────────────────────────────────────────────────────────────── */
+
+// NOTE: Move your API key to a backend proxy before publishing publicly
 const WEATHER_API_KEY = "90d0362b25a303ce535af33e1e98706e";
 
 async function loadWeather() {
-
     if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(async pos => {
+    navigator.geolocation.getCurrentPosition(
+        async pos => {
+            const { latitude: lat, longitude: lon } = pos.coords;
 
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+            try {
+                /* Weather */
+                const weatherRes = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${WEATHER_API_KEY}`
+                );
+                const weather = await weatherRes.json();
 
-        /* WEATHER */
+                document.getElementById("weather-temp").textContent =
+                    Math.round(weather.main.temp) + "°";
+                document.getElementById("weather-condition").textContent =
+                    weather.weather[0].main;
+                document.getElementById("weather-location").textContent =
+                    weather.name;
+                document.getElementById("weather-icon").src =
+                    `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
 
-        const weatherRes = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${WEATHER_API_KEY}`
-        );
+                const cloud = weather.clouds.all;
+                document.getElementById("weather-cloud").textContent = cloud + "%";
+                document.getElementById("cloud-fill").style.width = cloud + "%";
 
-        const weather = await weatherRes.json();
+                /* AQI — FIX: was missing await + .json() parse, aqiData was never defined */
+                const aqiRes = await fetch(
+                    `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`
+                );
+                const aqiData = await aqiRes.json(); // ← was missing entirely
 
-        document.getElementById("weather-temp").textContent =
-            Math.round(weather.main.temp) + "°";
+                const aqi = aqiData.list[0].main.aqi;
+                const dot = document.getElementById("aqi-dot");
 
-        document.getElementById("weather-condition").textContent =
-            weather.weather[0].main;
+                const aqiMap = {
+                    1: { label: "Good", class: "aqi-good" },
+                    2: { label: "Fair", class: "aqi-fair" },
+                    3: { label: "Moderate", class: "aqi-moderate" },
+                    4: { label: "Poor", class: "aqi-poor" },
+                    5: { label: "Bad", class: "aqi-bad" }
+                };
 
-        document.getElementById("weather-location").textContent =
-            weather.name;
+                document.getElementById("weather-aqi").textContent = aqiMap[aqi].label;
+                dot.classList.add(aqiMap[aqi].class);
 
-        document.getElementById("weather-cloud").textContent =
-            weather.clouds.all + "%";
-
-        document.getElementById("weather-icon").src =
-            `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
-
-
-        /* AQI */
-
-        const aqiRes = await fetch(
-            `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`
-        );
-
-        const aqi = aqiData.list[0].main.aqi;
-
-        const dot = document.getElementById("aqi-dot");
-
-        const aqiMap = {
-            1: { label: "Good", class: "aqi-good" },
-            2: { label: "Fair", class: "aqi-fair" },
-            3: { label: "Moderate", class: "aqi-moderate" },
-            4: { label: "Poor", class: "aqi-poor" },
-            5: { label: "Bad", class: "aqi-bad" }
-        };
-
-        document.getElementById("weather-aqi").textContent = aqiMap[aqi].label;
-        dot.classList.add(aqiMap[aqi].class);
-
-        const cloud = weather.clouds.all;
-
-        document.getElementById("weather-cloud").textContent = cloud + "%";
-        document.getElementById("cloud-fill").style.width = cloud + "%";
-
-
-    });
-
+            } catch (err) {
+                console.warn("Weather/AQI fetch failed:", err);
+            }
+        },
+        err => console.warn("Geolocation denied:", err)
+    );
 }
 
-loadWeather();
-updateClock();
+/* ─── DEFAULT DATA ───────────────────────────────────────────────────────── */
 
-
-
-/* DEFAULT DATA */
 const defaultLinks = [
     { id: crypto.randomUUID(), name: "YouTube", url: "https://youtube.com", color: "#ff0000", textColor: "#ffffff" },
     { id: crypto.randomUUID(), name: "GitHub", url: "https://github.com", color: "#24292e", textColor: "#ffffff" },
@@ -145,7 +137,8 @@ const defaultLinks = [
     { id: crypto.randomUUID(), name: "LinkedIn", url: "https://linkedin.com", color: "#0a66c2", textColor: "#ffffff" }
 ];
 
-/* LOAD FAVORITES */
+/* ─── LOAD FAVORITES ─────────────────────────────────────────────────────── */
+
 function loadLinks() {
     chrome.storage.sync.get(["links"], result => {
         const links = ensureIds(result.links || defaultLinks);
@@ -184,7 +177,6 @@ function loadLinks() {
 
                 const menuWidth = 180;
                 const menuHeight = 120;
-
                 const x = Math.min(e.clientX, window.innerWidth - menuWidth);
                 const y = Math.min(e.clientY, window.innerHeight - menuHeight);
 
@@ -193,7 +185,6 @@ function loadLinks() {
                 contextMenu.style.display = "flex";
                 isContextMenuOpen = true;
             });
-
 
             /* Drag & reorder */
             card.addEventListener("dragstart", () => {
@@ -225,26 +216,34 @@ function loadLinks() {
                 const [moved] = updated.splice(dragIndex, 1);
                 updated.splice(index, 0, moved);
 
+                // FIX: call loadLinks() after save so DOM stays in sync,
+                // then animate based on the freshly rendered positions
                 chrome.storage.sync.set({ links: updated }, () => {
                     activeIndex = null;
-                    requestAnimationFrame(() =>
-                        animateReorder(container, oldPos)
-                    );
+                    loadLinks();
+                    requestAnimationFrame(() => animateReorder(container, oldPos));
                 });
             });
         });
     });
 }
 
-/* INITIAL LOAD */
-chrome.storage.sync.get(["links"], res => {
-    if (!res.links) chrome.storage.sync.set({ links: defaultLinks }, loadLinks);
-    else loadLinks();
+/* ─── LIVE STORAGE SYNC ──────────────────────────────────────────────────── */
+
+// FIX: Re-render links whenever settings.js (or any other context) saves new data
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.links) {
+        loadLinks();
+    }
 });
 
+/* ─── DOM READY ──────────────────────────────────────────────────────────── */
 
-/* DOM READY */
 document.addEventListener("DOMContentLoaded", () => {
+
+    // FIX: All DOM-dependent init is now safely inside DOMContentLoaded
+
+    /* Grab DOM refs */
     contextMenu = document.getElementById("context-menu");
     editModal = document.getElementById("edit-modal");
     editName = document.getElementById("edit-name");
@@ -259,12 +258,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingsBtn = document.getElementById("settings-btn");
     const settingsFrame = document.getElementById("settings-frame");
 
+    /* ── Clock ── */
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* ── Weather ── */
+    loadWeather();
+
+    /* ── Initial link load ── */
+    chrome.storage.sync.get(["links"], res => {
+        if (!res.links) chrome.storage.sync.set({ links: defaultLinks }, loadLinks);
+        else loadLinks();
+    });
+
+    /* ── Settings panel ── */
     function openSettings() {
         settingsFrame.style.display = "block";
-        requestAnimationFrame(() => {
-            settingsFrame.classList.add("open");
-        });
+        requestAnimationFrame(() => settingsFrame.classList.add("open"));
     }
+
+    function closeSettings() {
+        settingsFrame.classList.remove("open");
+        setTimeout(() => { settingsFrame.style.display = "none"; }, 200);
+    }
+
+    settingsBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        settingsFrame.classList.contains("open") ? closeSettings() : openSettings();
+    });
 
     document.addEventListener("click", e => {
         if (
@@ -275,35 +296,13 @@ document.addEventListener("DOMContentLoaded", () => {
             closeSettings();
         }
 
-        if (
-            isContextMenuOpen &&
-            contextMenu &&
-            !contextMenu.contains(e.target)
-        ) {
+        if (isContextMenuOpen && contextMenu && !contextMenu.contains(e.target)) {
             contextMenu.style.display = "none";
             isContextMenuOpen = false;
         }
     });
 
-
-    function closeSettings() {
-        settingsFrame.classList.remove("open");
-        setTimeout(() => {
-            settingsFrame.style.display = "none";
-        }, 200);
-    }
-
-    settingsBtn.addEventListener("click", e => {
-        e.stopPropagation();
-
-        if (settingsFrame.classList.contains("open")) {
-            closeSettings();
-        } else {
-            openSettings();
-        }
-    });
-
-    /* Color preview sync */
+    /* ── Color preview sync ── */
     const cardPreview = document.querySelector("#edit-color + .color-preview");
     const textPreview = document.querySelector("#edit-text-color + .color-preview");
 
@@ -315,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editColor.addEventListener("input", syncColorPreviews);
     editTextColor.addEventListener("input", syncColorPreviews);
 
-    /* Context menu actions */
+    /* ── Context menu actions ── */
     contextMenu.addEventListener("click", e => {
         const btn = e.target.closest("button");
         if (!btn || activeIndex === null) return;
@@ -324,20 +323,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const links = res.links || [];
             const item = links[activeIndex];
 
-            if (btn.dataset.action === "open") window.open(item.url, "_blank");
+            if (btn.dataset.action === "open") {
+                window.open(item.url, "_blank");
+            }
 
             if (btn.dataset.action === "remove") {
                 const removedId = item.id;
                 links.splice(activeIndex, 1);
-                chrome.storage.sync.set({ links });
+                chrome.storage.sync.set({ links }, loadLinks); // FIX: refresh after remove
                 chrome.storage.local.remove(`icon_${removedId}`);
             }
 
             if (btn.dataset.action === "edit") {
                 editName.value = item.name;
                 editUrl.value = item.url;
-                editColor.value = item.color;
-                editTextColor.value = item.textColor;
+                editColor.value = item.color || "#000000";
+                editTextColor.value = item.textColor || "#ffffff";
 
                 chrome.storage.local.get([`icon_${item.id}`], r => {
                     editIconPreview.src = r[`icon_${item.id}`]
@@ -354,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* Icon upload */
+    /* ── Icon upload ── */
     editIconInput.addEventListener("change", () => {
         const file = editIconInput.files[0];
         if (!file) return;
@@ -366,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
         reader.readAsDataURL(file);
     });
 
-    /* Save edit */
+    /* ── Save edit ── */
     saveEditBtn.addEventListener("click", () => {
         if (!editName.value || !editUrl.value) return;
 
@@ -381,24 +382,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 textColor: editTextColor.value
             });
 
-            if (pendingIcon)
+            if (pendingIcon) {
                 chrome.storage.local.set({ [`icon_${item.id}`]: pendingIcon });
+            }
 
             chrome.storage.sync.set({ links }, () => {
                 editModal.style.display = "none";
                 activeIndex = null;
                 pendingIcon = null;
+                loadLinks(); // FIX: refresh after edit save
             });
         });
     });
 
+    /* ── Cancel edit ── */
     cancelEditBtn.addEventListener("click", () => {
         editModal.style.display = "none";
         activeIndex = null;
         pendingIcon = null;
     });
 
-    /* Global click & ESC */
+    /* ── Keyboard shortcuts ── */
     document.addEventListener("keydown", e => {
         if (e.key !== "Escape") return;
 
@@ -411,6 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (settingsFrame.classList.contains("open")) {
             closeSettings();
+            return;
         }
 
         if (isContextMenuOpen) {
