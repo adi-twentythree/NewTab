@@ -5,17 +5,21 @@
   font-family: "Inter", "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* IMPROVEMENT 3: body scrollable so panel content is never clipped */
 body {
   margin: 0;
   padding: 0;
   background: transparent;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 /* ── GLASS ROOT ──────────────────────────────────────────────────────────── */
 
 .settings-root {
   padding: 18px 16px;
+  min-height: 100%;
   background: linear-gradient(
     160deg,
     rgba(255, 255, 255, 0.1) 0%,
@@ -25,7 +29,6 @@ body {
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
-  /* Shadow lives on the parent iframe in newtab.css to avoid being clipped */
   color: #fff;
 }
 
@@ -252,7 +255,6 @@ body {
   opacity: 1;
 }
 
-/* Mask the key value so it isn't readable at a glance */
 #api-key-input {
   letter-spacing: 0.08em;
   font-size: 12.5px;

@@ -14,14 +14,15 @@
         <source src="assets/video.mp4" type="video/mp4" />
     </video>
 
-    <!-- FIX: overlay is now a real vignette layer, not dead markup -->
     <div class="overlay"></div>
 
-    <!-- FIX: clock moved here — position:fixed but was inside center-block,
-         leaving a ghost flex gap. Now a true sibling at the root level. -->
-    <div id="clock">00:00</div>
+    <!-- IMPROVEMENT 5: Clock now has two spans — time + date -->
+    <div id="clock">
+        <span class="clock-time">00:00</span>
+        <span class="clock-date"></span>
+    </div>
 
-    <!-- Weather widget — fixed position, lives outside scroll flow -->
+    <!-- Weather widget — IMPROVEMENT 6: starts visible with shimmer skeleton -->
     <div class="weather-widget">
         <div class="weather-sky"></div>
         <div class="weather-content">
@@ -60,11 +61,21 @@
     <div class="container">
 
         <div class="center-block">
+            <!-- IMPROVEMENT 1: Greeting above search -->
+            <div id="greeting" class="greeting"></div>
+
             <div class="search-box">
-                <input id="search-input" type="text" placeholder="Search Google..." autofocus autocomplete="off" />
+                <input id="search-input" type="text" placeholder="Search..." autofocus autocomplete="off" />
+                <!-- IMPROVEMENT 2: Engine switcher below input -->
+                <div class="engine-switcher">
+                    <button class="engine-btn active" data-engine="google">Google</button>
+                    <button class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
+                    <button class="engine-btn" data-engine="bing">Bing</button>
+                </div>
             </div>
         </div>
 
+        <!-- IMPROVEMENT 7: Quick tools use glass-dark style (CSS) -->
         <div class="quick-tools" id="quick-tools">
             <a class="tool-item" href="https://chat.openai.com" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="ChatGPT" />
@@ -96,10 +107,11 @@
 
     <iframe id="settings-frame" src="module/settings.html" title="Settings"></iframe>
 
+    <!-- IMPROVEMENT 9: Context menu buttons have icon spans -->
     <div id="context-menu" class="context-menu">
-        <button data-action="open">Open in new tab</button>
-        <button data-action="edit">Edit</button>
-        <button data-action="remove" class="danger">Remove</button>
+        <button data-action="open"><span class="ctx-icon">↗</span>Open in new tab</button>
+        <button data-action="edit"><span class="ctx-icon">✏️</span>Edit</button>
+        <button data-action="remove" class="danger"><span class="ctx-icon">🗑</span>Remove</button>
     </div>
 
     <div id="edit-modal" class="glass-backdrop">
