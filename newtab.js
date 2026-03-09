@@ -98,12 +98,12 @@ async function loadWeather() {
     const apiKey = await getApiKey();
 
     if (!apiKey) {
-        document.querySelector(".weather-widget")?.style.setProperty("display", "none");
+        document.getElementById("weather-widget")?.style.setProperty("display", "none");
         return;
     }
 
     if (!navigator.geolocation) {
-        document.querySelector(".weather-widget")?.style.setProperty("display", "none");
+        document.getElementById("weather-widget")?.style.setProperty("display", "none");
         return;
     }
 
@@ -111,6 +111,7 @@ async function loadWeather() {
         async pos => {
             const { latitude: lat, longitude: lon } = pos.coords;
             try {
+                // Current weather
                 const weatherRes = await fetch(
                     `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`
                 );
@@ -118,46 +119,60 @@ async function loadWeather() {
 
                 if (weather.cod && weather.cod !== 200) {
                     console.warn("Weather API error:", weather.message);
-                    document.querySelector(".weather-widget")?.style.setProperty("display", "none");
+                    document.getElementById("weather-widget")?.style.setProperty("display", "none");
                     return;
                 }
 
-                document.getElementById("weather-temp").textContent      = Math.round(weather.main.temp) + "°";
-                document.getElementById("weather-condition").textContent  = weather.weather[0].main;
-                document.getElementById("weather-location").textContent   = weather.name;
-                document.getElementById("weather-icon").src               = `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
-
-                const cloud = weather.clouds.all;
-                document.getElementById("weather-cloud").textContent = cloud + "%";
-                document.getElementById("cloud-fill").style.width    = cloud + "%";
-
-                const aqiRes  = await fetch(
-                    `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`
+                // Forecast for H/L and rain probability
+                const forecastRes = await fetch(
+                    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=8&units=metric&appid=${apiKey}`
                 );
-                const aqiData = await aqiRes.json();
-                const aqi     = aqiData.list[0].main.aqi;
-                const dot     = document.getElementById("aqi-dot");
+                const forecast = await forecastRes.json();
 
-                const aqiMap = {
-                    1: { label: "Good",     cls: "aqi-good"     },
-                    2: { label: "Fair",     cls: "aqi-fair"     },
-                    3: { label: "Moderate", cls: "aqi-moderate" },
-                    4: { label: "Poor",     cls: "aqi-poor"     },
-                    5: { label: "Bad",      cls: "aqi-bad"      }
-                };
+                // UV index
+                const uviRes = await fetch(
+                    `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`
+                );
+                const uviData = await uviRes.json();
 
-                document.getElementById("weather-aqi").textContent = aqiMap[aqi].label;
-                dot.className = `aqi-dot ${aqiMap[aqi].cls}`;
+                // Populate top section
+                document.getElementById("weather-location").textContent = weather.name;
+                document.getElementById("weather-temp").textContent     = Math.round(weather.main.temp);
+                document.getElementById("weather-condition").textContent = weather.weather[0].main;
 
-                // IMPROVEMENT 6: .visible removes shimmer skeleton
-                document.querySelector(".weather-widget")?.classList.add("visible");
+                // H/L from today's forecast
+                if (forecast?.list?.length) {
+                    const temps  = forecast.list.map(f => f.main.temp);
+                    const high   = Math.round(Math.max(...temps));
+                    const low    = Math.round(Math.min(...temps));
+                    document.getElementById("weather-high-low").textContent = `H:${high}° L:${low}°`;
+
+                    // Rain probability from next period
+                    const pop = Math.round((forecast.list[0].pop || 0) * 100);
+                    document.getElementById("weather-rain").textContent = `${pop}%`;
+                }
+
+                // Wind
+                const windKmh = Math.round(weather.wind.speed * 3.6);
+                document.getElementById("weather-wind").textContent = `${windKmh} km/h`;
+
+                // Humidity
+                document.getElementById("weather-humidity").textContent = `${weather.main.humidity}%`;
+
+                // UV Index
+                const uvi = Math.round(uviData.value ?? 0);
+                const uviLabel = uvi <= 2 ? "Low" : uvi <= 5 ? "Moderate" : uvi <= 7 ? "High" : uvi <= 10 ? "Very High" : "Extreme";
+                document.getElementById("weather-uv").textContent       = uvi;
+                document.getElementById("weather-uv-label").textContent = uviLabel;
+
+                document.getElementById("weather-widget")?.classList.add("visible");
 
             } catch (err) {
-                console.warn("Weather/AQI fetch failed:", err);
-                document.querySelector(".weather-widget")?.style.setProperty("display", "none");
+                console.warn("Weather fetch failed:", err);
+                document.getElementById("weather-widget")?.style.setProperty("display", "none");
             }
         },
-        () => document.querySelector(".weather-widget")?.style.setProperty("display", "none")
+        () => document.getElementById("weather-widget")?.style.setProperty("display", "none")
     );
 }
 
@@ -393,25 +408,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateClock();
     setInterval(updateClock, 1000);
 
-    /* ── IMPROVEMENT 2: Engine switcher ── */
-    function updateEngineBtns() {
-        document.querySelectorAll(".engine-btn").forEach(b => {
-            b.classList.toggle("active", b.dataset.engine === currentEngine);
-        });
-    }
-
+    /* ── IMPROVEMENT 2: Load saved engine preference ── */
     chrome.storage.sync.get(["searchEngine"], res => {
         currentEngine = res.searchEngine || "google";
-        updateEngineBtns();
-    });
-
-    document.querySelectorAll(".engine-btn").forEach(btn => {
-        btn.addEventListener("click", e => {
-            e.stopPropagation();
-            currentEngine = btn.dataset.engine;
-            chrome.storage.sync.set({ searchEngine: currentEngine });
-            updateEngineBtns();
-        });
     });
 
     /* ── Search (fires on Enter, uses selected engine) ── */

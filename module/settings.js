@@ -1,8 +1,8 @@
-const nameInput   = document.getElementById("name");
-const urlInput    = document.getElementById("url");
-const colorInput  = document.getElementById("color");
-const iconInput   = document.getElementById("icon");
-const addBtn      = document.getElementById("add-btn");
+const nameInput    = document.getElementById("name");
+const urlInput     = document.getElementById("url");
+const colorInput   = document.getElementById("color");
+const iconInput    = document.getElementById("icon");
+const addBtn       = document.getElementById("add-btn");
 const colorPreview = document.querySelector(".color-pill span");
 
 const bgInput       = document.getElementById("bg-input");
@@ -44,7 +44,6 @@ addBtn.addEventListener("click", async () => {
     chrome.storage.sync.set({ links }, () => {
       if (icon) chrome.storage.local.set({ [`icon_${newId}`]: icon });
 
-      // FIX: reset all fields including color picker after successful add
       nameInput.value  = "";
       urlInput.value   = "";
       iconInput.value  = "";
@@ -61,6 +60,25 @@ function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+/* ─── Search Engine ─────────────────────────────────────────────────────── */
+
+const engineRadios = document.querySelectorAll("input[name='engine']");
+
+// Load saved engine and check the right radio
+chrome.storage.sync.get(["searchEngine"], res => {
+  const saved = res.searchEngine || "google";
+  engineRadios.forEach(r => { r.checked = r.value === saved; });
+});
+
+// Persist on change — newtab.js reads this on next search
+engineRadios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (radio.checked) {
+      chrome.storage.sync.set({ searchEngine: radio.value });
+    }
+  });
+});
 
 /* ─── IndexedDB helpers ─────────────────────────────────────────────────── */
 
@@ -115,7 +133,6 @@ applyBgBtn.addEventListener("click", async () => {
 
   await saveBgToIDB(file);
 
-  // FIX: only accept messages from our own extension origin
   window.parent.postMessage({ type: "apply-background" }, chrome.runtime.getURL("").slice(0, -1));
 
   applyBgBtn.textContent = "Applied ✓";
@@ -162,7 +179,6 @@ resetBgBtn.addEventListener("click", async () => {
 
 chrome.storage.sync.get(["weatherApiKey"], res => {
   if (res.weatherApiKey) {
-    // Show masked version — only last 4 chars visible
     const key = res.weatherApiKey;
     apiKeyInput.placeholder = "••••••••••••••••••••" + key.slice(-4);
   }

@@ -22,38 +22,42 @@
         <span class="clock-date"></span>
     </div>
 
-    <!-- Weather widget — IMPROVEMENT 6: starts visible with shimmer skeleton -->
-    <div class="weather-widget">
-        <div class="weather-sky"></div>
-        <div class="weather-content">
-            <div class="weather-location">
-                <span>📍</span>
-                <span id="weather-location">Loading...</span>
-            </div>
-            <div class="weather-main">
-                <img id="weather-icon" class="weather-icon" alt="weather icon" />
-                <div>
-                    <div id="weather-temp" class="weather-temp">--°</div>
-                    <div id="weather-condition" class="weather-condition">--</div>
+    <!-- Weather widget — redesigned to match reference layout -->
+    <div class="weather-widget" id="weather-widget">
+        <div class="weather-top">
+            <div class="weather-top-left">
+                <div class="weather-city" id="weather-location">--</div>
+                <div class="weather-meta">
+                    <span id="weather-high-low">H:--° L:--°</span>
+                    <span class="weather-meta-dot">·</span>
+                    <span id="weather-condition">--</span>
                 </div>
             </div>
-            <div class="weather-panels">
-                <div class="weather-panel">
-                    <div class="panel-title">AQI</div>
-                    <div class="panel-value">
-                        <span id="aqi-dot" class="aqi-dot"></span>
-                        <span id="weather-aqi">--</span>
-                    </div>
+            <div class="weather-top-right">
+                <div class="weather-temp-big" id="weather-temp">--</div>
+                <div class="weather-unit">°C</div>
+            </div>
+        </div>
+
+        <div class="weather-grid">
+            <div class="weather-panel">
+                <div class="panel-header"><span class="panel-icon">🌬</span> Wind</div>
+                <div class="panel-val" id="weather-wind">-- km/h</div>
+            </div>
+            <div class="weather-panel">
+                <div class="panel-header"><span class="panel-icon">💧</span> Humidity</div>
+                <div class="panel-val" id="weather-humidity">--%</div>
+            </div>
+            <div class="weather-panel">
+                <div class="panel-header"><span class="panel-icon">🔆</span> UV Index</div>
+                <div class="panel-val-row">
+                    <span class="panel-val" id="weather-uv">--</span>
+                    <span class="panel-val-label" id="weather-uv-label"></span>
                 </div>
-                <div class="weather-panel">
-                    <div class="panel-title">Cloud</div>
-                    <div class="panel-value">
-                        <span id="weather-cloud">--%</span>
-                    </div>
-                    <div class="cloud-bar">
-                        <div id="cloud-fill" class="cloud-fill"></div>
-                    </div>
-                </div>
+            </div>
+            <div class="weather-panel">
+                <div class="panel-header"><span class="panel-icon">🌧</span> Rain</div>
+                <div class="panel-val" id="weather-rain">--%</div>
             </div>
         </div>
     </div>
@@ -66,12 +70,6 @@
 
             <div class="search-box">
                 <input id="search-input" type="text" placeholder="Search..." autofocus autocomplete="off" />
-                <!-- IMPROVEMENT 2: Engine switcher below input -->
-                <div class="engine-switcher">
-                    <button class="engine-btn active" data-engine="google">Google</button>
-                    <button class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
-                    <button class="engine-btn" data-engine="bing">Bing</button>
-                </div>
             </div>
         </div>
 

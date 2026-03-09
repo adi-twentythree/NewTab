@@ -142,6 +142,58 @@ body {
   background: rgba(255, 255, 255, 0.16);
 }
 
+/* ── ENGINE OPTIONS ──────────────────────────────────────────────────────── */
+
+.engine-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.engine-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.engine-option input[type="radio"] {
+  display: none;
+}
+
+.engine-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.engine-label img {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.engine-option input[type="radio"]:checked + .engine-label {
+  background: rgba(55, 195, 255, 0.12);
+  border-color: rgba(55, 195, 255, 0.35);
+  color: #fff;
+}
+
+.engine-label:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
 /* ── BUTTONS ─────────────────────────────────────────────────────────────── */
 
 .primary-btn {

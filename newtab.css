@@ -28,11 +28,9 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.45) 100%
-  );
+  background: radial-gradient(ellipse at center,
+      transparent 30%,
+      rgba(0, 0, 0, 0.45) 100%);
   pointer-events: none;
 }
 
@@ -57,7 +55,7 @@ body {
 /* ── IMPROVEMENT 1: Greeting ────────────────────────────────────────────── */
 
 .greeting {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -75,35 +73,29 @@ body {
   transform: translateY(0);
 }
 
-/* ── Clock card ─────────────────────────────────────────────────────────── */
+/* ── Clock card — minimal dark widget ───────────────────────────────────── */
 
 #clock {
   position: fixed;
   top: 22px;
   left: 22px;
-  padding: 14px 18px;
-  border-radius: 22px;
+  padding: 16px 22px 14px;
+  border-radius: 26px;
   font-family: "Space Grotesk", "Inter", sans-serif;
-  /* Identical glass recipe as weather widget */
-  background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  background: rgba(10, 10, 10, 0.82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 2px;
   z-index: 20;
   opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.25s ease;
-}
-
-#clock:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 #clock.visible {
@@ -112,20 +104,24 @@ body {
 }
 
 .clock-time {
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  color: #fff;
 }
 
 .clock-date {
-  font-size: 12px;
-  font-weight: 400;
-  opacity: 0.55;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1;
+  margin-top: 4px;
 }
 
 /* ── IMPROVEMENT 2: Search + engine switcher ─────────────────────────────── */
@@ -161,40 +157,6 @@ body {
 
 .search-box input::placeholder {
   color: rgba(255, 255, 255, 0.5);
-}
-
-.engine-switcher {
-  display: flex;
-  gap: 6px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.engine-btn {
-  padding: 5px 14px;
-  border-radius: 999px;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.5);
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
-  white-space: nowrap;
-}
-
-.engine-btn:hover {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.engine-btn.active {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ── IMPROVEMENT 4: Favorites grid — capped at 4 columns ────────────────── */
@@ -292,9 +254,19 @@ body {
   opacity: 0.55;
 }
 
-.empty-icon { font-size: 28px; }
-.empty-text { font-size: 15px; font-weight: 500; }
-.empty-sub  { font-size: 12px; opacity: 0.7; }
+.empty-icon {
+  font-size: 28px;
+}
+
+.empty-text {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.empty-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
 
 /* ── Settings button ────────────────────────────────────────────────────── */
 
@@ -427,8 +399,15 @@ body {
 }
 
 @keyframes glassIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .glass-header h3 {
@@ -616,7 +595,6 @@ body {
   gap: 8px;
   padding: 8px 14px;
   border-radius: 999px;
-  /* Dark glass — matches the rest of the UI instead of jarring white */
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -640,192 +618,151 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* ── IMPROVEMENT 6: Weather — shimmer skeleton + smooth entry ───────────── */
+/* ── Weather widget — reference style ───────────────────────────────────── */
 
 .weather-widget {
   position: fixed;
   top: 22px;
   right: 22px;
-  width: 250px;
-  padding: 16px 18px;
-  border-radius: 22px;
-  overflow: hidden;
-  /* Identical glass recipe as clock */
-  background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  width: 270px;
+  padding: 20px 20px 18px;
+  border-radius: 26px;
+  background: rgba(12, 12, 12, 0.72);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
   color: white;
   font-family: "Space Grotesk", "Inter", sans-serif;
   z-index: 20;
-  opacity: 1;
-  transform: translateY(-6px);
-  transition: transform 0.4s ease, box-shadow 0.25s ease;
-}
-
-/* Shimmer overlay — visible until .visible is added */
-.weather-widget::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.07) 40%,
-    rgba(255, 255, 255, 0.13) 50%,
-    rgba(255, 255, 255, 0.07) 60%,
-    transparent 100%
-  );
-  background-size: 250% 100%;
-  animation: weatherShimmer 1.6s ease-in-out infinite;
-  border-radius: inherit;
-  opacity: 1;
-  transition: opacity 0.4s ease;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .weather-widget.visible {
+  opacity: 1;
   transform: translateY(0);
 }
 
-/* Shimmer fades out once data is loaded */
-.weather-widget.visible::after {
-  opacity: 0;
-  animation: none;
+/* Top row: city left, big temp right */
+.weather-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
-.weather-widget:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+.weather-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-@keyframes weatherShimmer {
-  0%   { background-position:  200% 0; }
-  100% { background-position: -200% 0; }
+.weather-city {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
 }
 
-.weather-sky {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(circle at 45px 40px, rgba(255, 210, 120, 0.35), rgba(255, 210, 120, 0.12) 80px, transparent 160px),
-    linear-gradient(180deg, rgba(79, 167, 255, 0.18), rgba(127, 200, 255, 0.05));
-  animation: sunPulse 8s ease-in-out infinite;
-}
-
-@keyframes sunPulse {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 1; }
-}
-
-.weather-content {
-  position: relative;
-  z-index: 2;
-}
-
-.weather-location {
-  font-size: 11px;
-  font-weight: 500;
-  opacity: 0.55;
+.weather-meta {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
 }
 
-.weather-main {
+.weather-meta-dot {
+  opacity: 0.4;
+}
+
+.weather-top-right {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 2px;
-}
-
-.weather-icon {
-  width: 44px;
-  height: 44px;
-}
-
-.weather-temp {
-  font-size: 40px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  align-items: flex-start;
+  gap: 2px;
   line-height: 1;
+}
+
+.weather-temp-big {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 52px;
+  font-weight: 600;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  color: #fff;
 }
 
-.weather-condition {
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0.55;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.weather-unit {
+  font-size: 18px;
+  font-weight: 400;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 6px;
 }
 
-.weather-panels {
-  display: flex;
-  gap: 10px;
+/* 2×2 panel grid */
+.weather-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .weather-panel {
-  flex: 1;
-  padding: 10px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px rgba(0, 0, 0, 0.25);
+  padding: 11px 13px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.panel-title {
-  font-size: 10px;
-  font-weight: 600;
-  opacity: 0.5;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.panel-header {
   font-family: "Space Grotesk", "Inter", sans-serif;
-}
-
-.panel-value {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  letter-spacing: 0.01em;
+}
+
+.panel-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.panel-val {
   font-family: "Space Grotesk", "Inter", sans-serif;
-  letter-spacing: -0.02em;
+  font-size: 16px;
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
-.aqi-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+/* UV row: number + label side by side */
+.panel-val-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
-.aqi-good     { background: #2ecc71; }
-.aqi-fair     { background: #f1c40f; }
-.aqi-moderate { background: #e67e22; }
-.aqi-poor     { background: #e74c3c; }
-.aqi-bad      { background: #c0392b; }
-
-.cloud-bar {
-  height: 4px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-  margin-top: 4px;
-}
-
-.cloud-fill {
-  height: 100%;
-  background: white;
-  transition: width 0.4s ease;
+.panel-val-label {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
@@ -842,6 +779,7 @@ body {
     padding: 10px 12px;
     width: 200px;
   }
+
   .links {
     grid-template-columns: repeat(2, 1fr);
   }
