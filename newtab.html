@@ -16,13 +16,12 @@
 
     <div class="overlay"></div>
 
-    <!-- IMPROVEMENT 5: Clock now has two spans — time + date -->
     <div id="clock">
         <span class="clock-time">00:00</span>
         <span class="clock-date"></span>
     </div>
 
-    <!-- Weather widget — redesigned to match reference layout -->
+    <!-- Weather widget -->
     <div class="weather-widget" id="weather-widget">
         <div class="weather-top">
             <div class="weather-top-left">
@@ -41,22 +40,55 @@
 
         <div class="weather-grid">
             <div class="weather-panel">
-                <div class="panel-header"><span class="panel-icon">🌬</span> Wind</div>
+                <div class="panel-header">
+                    <span class="panel-icon">
+                        <svg class="icon-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2"/>
+                            <path d="M15.73 8.73A2.5 2.5 0 1 1 19.5 12H2"/>
+                            <path d="M9.59 19.41A2 2 0 1 0 11 16H2"/>
+                        </svg>
+                    </span> Wind</div>
                 <div class="panel-val" id="weather-wind">-- km/h</div>
             </div>
             <div class="weather-panel">
-                <div class="panel-header"><span class="panel-icon">💧</span> Humidity</div>
+                <div class="panel-header">
+                    <span class="panel-icon">
+                        <svg class="icon-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                        </svg>
+                    </span> Humidity</div>
                 <div class="panel-val" id="weather-humidity">--%</div>
             </div>
             <div class="weather-panel">
-                <div class="panel-header"><span class="panel-icon">🔆</span> UV Index</div>
+                <div class="panel-header">
+                    <span class="panel-icon">
+                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1"     x2="12" y2="3"/>
+                            <line x1="12" y1="21"    x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22"  x2="5.64"  y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1"  y1="12"    x2="3"  y2="12"/>
+                            <line x1="21" y1="12"    x2="23" y2="12"/>
+                            <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+                            <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+                        </svg>
+                    </span> UV Index</div>
                 <div class="panel-val-row">
                     <span class="panel-val" id="weather-uv">--</span>
                     <span class="panel-val-label" id="weather-uv-label"></span>
                 </div>
             </div>
             <div class="weather-panel">
-                <div class="panel-header"><span class="panel-icon">🌧</span> Rain</div>
+                <div class="panel-header">
+                    <span class="panel-icon">
+                        <svg class="icon-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 15.25"/>
+                            <line class="rd" x1="8"  y1="19" x2="8"  y2="21"/>
+                            <line class="rd" x1="16" y1="19" x2="16" y2="21"/>
+                            <line class="rd" x1="12" y1="21" x2="12" y2="23"/>
+                        </svg>
+                    </span> Rain</div>
                 <div class="panel-val" id="weather-rain">--%</div>
             </div>
         </div>
@@ -65,7 +97,6 @@
     <div class="container">
 
         <div class="center-block">
-            <!-- IMPROVEMENT 1: Greeting above search -->
             <div id="greeting" class="greeting"></div>
 
             <div class="search-box">
@@ -73,43 +104,49 @@
             </div>
         </div>
 
-        <!-- IMPROVEMENT 7: Quick tools use glass-dark style (CSS) -->
-        <div class="quick-tools" id="quick-tools">
-            <a class="tool-item" href="https://chat.openai.com" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="ChatGPT" />
-                <span class="tool-label">ChatGPT</span>
-            </a>
-            <a class="tool-item" href="https://gemini.google.com" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini" />
-                <span class="tool-label">Gemini</span>
-            </a>
-            <a class="tool-item" href="https://itch.io/jams/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=itch.io&sz=64" alt="itch.io" />
-                <span>itch jams</span>
-            </a>
-            <a class="tool-item" href="https://www.ilovepdf.com/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" alt="ilovepdf" />
-                <span>I❤️PDF</span>
-            </a>
-            <a class="tool-item" href="https://robertsspaceindustries.com/en/" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=robertsspaceindustries.com&sz=64" alt="RSI" />
-                <span>RSI</span>
-            </a>
-        </div>
+        <!-- FIX #1: Quick tools populated dynamically by newtab.js -->
+        <div class="quick-tools" id="quick-tools"></div>
 
         <div class="links" id="links"></div>
 
     </div>
 
-    <button id="settings-btn" aria-label="Settings">⚙</button>
+    <button id="settings-btn" aria-label="Settings">
+        <svg class="settings-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+    </button>
 
     <iframe id="settings-frame" src="module/settings.html" title="Settings"></iframe>
 
-    <!-- IMPROVEMENT 9: Context menu buttons have icon spans -->
     <div id="context-menu" class="context-menu">
-        <button data-action="open"><span class="ctx-icon">↗</span>Open in new tab</button>
-        <button data-action="edit"><span class="ctx-icon">✏️</span>Edit</button>
-        <button data-action="remove" class="danger"><span class="ctx-icon">🗑</span>Remove</button>
+        <button data-action="open">
+            <span class="ctx-icon">
+                <svg class="ctx-svg ctx-open-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+            </span>Open in new tab
+        </button>
+        <button data-action="edit">
+            <span class="ctx-icon">
+                <svg class="ctx-svg ctx-edit-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                </svg>
+            </span>Edit
+        </button>
+        <button data-action="remove" class="danger">
+            <span class="ctx-icon">
+                <svg class="ctx-svg ctx-remove-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    <line x1="10" y1="11" x2="10" y2="17"/>
+                    <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+            </span>Remove
+        </button>
     </div>
 
     <div id="edit-modal" class="glass-backdrop">
@@ -159,6 +196,32 @@
             <div class="glass-actions">
                 <button id="cancel-edit" class="glass-btn ghost">Cancel</button>
                 <button id="save-edit" class="glass-btn primary">Save</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tool edit modal (Name + URL only — tools have no card colors) -->
+    <div id="edit-tool-modal" class="glass-backdrop">
+        <div class="glass-modal">
+
+            <div class="glass-header">
+                <h3>Edit Quick Tool</h3>
+            </div>
+
+            <div class="glass-field">
+                <label for="edit-tool-name">Name</label>
+                <input type="text" id="edit-tool-name" autocomplete="off" />
+            </div>
+
+            <div class="glass-field">
+                <label for="edit-tool-url">URL</label>
+                <input type="text" id="edit-tool-url" autocomplete="off" />
+            </div>
+
+            <div class="glass-actions">
+                <button id="cancel-tool-edit" class="glass-btn ghost">Cancel</button>
+                <button id="save-tool-edit" class="glass-btn primary">Save</button>
             </div>
 
         </div>

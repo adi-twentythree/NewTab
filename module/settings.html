@@ -11,6 +11,7 @@
 
   <div class="settings-root">
 
+    <!-- ── Add Favorite — FIX #3: text color + FIX #4: url hint ── -->
     <section class="add-section">
       <h3>Add Favorite</h3>
       <div class="add-card">
@@ -18,13 +19,24 @@
           <input type="text" id="name" placeholder="Name" />
         </div>
         <div class="add-field">
-          <input type="url" id="url" placeholder="https://example.com" />
+          <input type="text" id="url" placeholder="example.com" />
         </div>
         <div class="add-controls">
-          <label class="color-pill">
-            <input type="color" id="color" value="#1a1a1a" />
-            <span></span>
-          </label>
+          <!-- FIX #3: two color pickers — card color + text color -->
+          <div class="add-color-group">
+            <span class="add-color-label">Card</span>
+            <label class="color-pill">
+              <input type="color" id="color" value="#1a1a1a" />
+              <span></span>
+            </label>
+          </div>
+          <div class="add-color-group">
+            <span class="add-color-label">Text</span>
+            <label class="color-pill">
+              <input type="color" id="text-color" value="#ffffff" />
+              <span style="background:#ffffff"></span>
+            </label>
+          </div>
           <label class="icon-pill">
             Icon
             <input type="file" id="icon" accept="image/*" hidden />
@@ -36,6 +48,52 @@
 
     <div class="section-divider"></div>
 
+    <!-- ── Quick Tools — Add only (right-click on the page to edit/remove) ── -->
+    <section class="add-section">
+      <h3>Quick Tools</h3>
+      <div class="add-card">
+        <div class="add-field">
+          <input type="text" id="tool-name" placeholder="Name" />
+        </div>
+        <div class="add-field">
+          <input type="text" id="tool-url" placeholder="example.com" />
+        </div>
+        <button id="add-tool-btn" class="primary-btn">Add Tool</button>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ── Search Engine — icon-only single row ── -->
+    <section class="add-section">
+      <h3>Search Engine</h3>
+      <div class="add-card">
+        <div class="engine-options">
+          <label class="engine-option">
+            <input type="radio" name="engine" value="google" />
+            <span class="engine-icon-btn">
+              <img src="https://www.google.com/s2/favicons?domain=google.com&sz=64" alt="Google" />
+            </span>
+          </label>
+          <label class="engine-option">
+            <input type="radio" name="engine" value="duckduckgo" />
+            <span class="engine-icon-btn">
+              <img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=64" alt="DuckDuckGo" />
+            </span>
+          </label>
+          <label class="engine-option">
+            <input type="radio" name="engine" value="bing" />
+            <span class="engine-icon-btn">
+              <img src="https://www.google.com/s2/favicons?domain=bing.com&sz=64" alt="Bing" />
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ── Background ── -->
     <section class="add-section">
       <h3>Background</h3>
       <div class="add-card">
@@ -53,6 +111,7 @@
 
     <div class="section-divider"></div>
 
+    <!-- ── Weather API Key ── -->
     <section class="add-section">
       <h3>Weather API Key</h3>
       <div class="add-card">

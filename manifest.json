@@ -2,13 +2,14 @@
   "manifest_version": 3,
   "name": "Live New Tab Dashboard",
   "description": "Custom new tab with live wallpaper, weather, clock, and links",
-  "version": "1.0",
+  "version": "1.1",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
   "permissions": [
     "storage",
-    "topSites"
+    "topSites",
+    "geolocation"
   ],
   "host_permissions": [
     "https://api.openweathermap.org/*",

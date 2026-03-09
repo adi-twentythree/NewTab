@@ -5,7 +5,29 @@
   font-family: "Inter", "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* IMPROVEMENT 3: body scrollable so panel content is never clipped */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  height: 100%;
+}
+
+html::-webkit-scrollbar {
+  width: 4px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -13,6 +35,25 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+body::-webkit-scrollbar {
+  width: 4px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 /* ── GLASS ROOT ──────────────────────────────────────────────────────────── */
@@ -88,9 +129,26 @@ body {
 
 .add-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  gap: 10px;
   margin-top: 2px;
+}
+
+/* ── FIX #3: Color group — label above pill ──────────────────────────────── */
+
+.add-color-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-color-label {
+  font-size: 10px;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* ── COLOR PILL ──────────────────────────────────────────────────────────── */
@@ -106,9 +164,7 @@ body {
   transition: background 0.18s;
 }
 
-.color-pill:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
+.color-pill:hover { background: rgba(255, 255, 255, 0.2); }
 
 .color-pill input {
   opacity: 0;
@@ -136,18 +192,17 @@ body {
   font-size: 13px;
   cursor: pointer;
   transition: background 0.18s ease;
+  white-space: nowrap;
 }
 
-.icon-pill:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
+.icon-pill:hover { background: rgba(255, 255, 255, 0.16); }
 
-/* ── ENGINE OPTIONS ──────────────────────────────────────────────────────── */
+/* ── ENGINE OPTIONS — single row, icon-only circles ─────────────────────── */
 
 .engine-options {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .engine-option {
@@ -156,42 +211,37 @@ body {
   cursor: pointer;
 }
 
-.engine-option input[type="radio"] {
-  display: none;
-}
+.engine-option input[type="radio"] { display: none; }
 
-.engine-label {
+.engine-icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.07);
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 12px;
-  font-size: 13.5px;
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.05);
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  justify-content: center;
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.engine-label img {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
-  flex-shrink: 0;
+.engine-icon-btn img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: block;
 }
 
-.engine-option input[type="radio"]:checked + .engine-label {
+.engine-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  transform: scale(1.08);
+}
+
+.engine-option input[type="radio"]:checked + .engine-icon-btn {
+  border-color: rgba(55, 195, 255, 0.7);
   background: rgba(55, 195, 255, 0.12);
-  border-color: rgba(55, 195, 255, 0.35);
-  color: #fff;
-}
-
-.engine-label:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  box-shadow: 0 0 0 3px rgba(55, 195, 255, 0.15);
 }
 
 /* ── BUTTONS ─────────────────────────────────────────────────────────────── */
@@ -209,15 +259,8 @@ body {
   transition: opacity 0.18s ease, transform 0.15s ease;
 }
 
-.primary-btn:hover:not(:disabled) {
-  opacity: 0.88;
-  transform: translateY(-1px);
-}
-
-.primary-btn:disabled {
-  opacity: 0.32;
-  cursor: not-allowed;
-}
+.primary-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.primary-btn:disabled             { opacity: 0.32; cursor: not-allowed; }
 
 .ghost-btn {
   flex: 1;
@@ -232,10 +275,7 @@ body {
   transition: background 0.18s ease, color 0.18s ease;
 }
 
-.ghost-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-}
+.ghost-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
 /* ── BACKGROUND SECTION ──────────────────────────────────────────────────── */
 
@@ -264,11 +304,7 @@ body {
   background: rgba(55, 195, 255, 0.07);
 }
 
-.bg-upload-icon {
-  font-size: 18px;
-  line-height: 1;
-  flex-shrink: 0;
-}
+.bg-upload-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
 
 #bg-label-text {
   opacity: 0.55;
@@ -278,36 +314,14 @@ body {
   flex: 1;
 }
 
-.bg-upload-label.has-file #bg-label-text {
-  opacity: 1;
-  color: #7de8ff;
-}
+.bg-upload-label.has-file #bg-label-text { opacity: 1; color: #7de8ff; }
 
-/* ── BG ACTION ROW ───────────────────────────────────────────────────────── */
-
-.bg-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.bg-actions .apply-btn {
-  flex: 2;
-}
+.bg-actions         { display: flex; gap: 8px; }
+.bg-actions .apply-btn { flex: 2; }
 
 /* ── API KEY SECTION ─────────────────────────────────────────────────────── */
 
-.api-key-hint {
-  font-size: 11.5px;
-  opacity: 0.45;
-  padding: 0 2px;
-}
+.api-key-hint { font-size: 11.5px; opacity: 0.45; padding: 0 2px; }
+.api-link     { color: #7de8ff; opacity: 1; }
 
-.api-link {
-  color: #7de8ff;
-  opacity: 1;
-}
-
-#api-key-input {
-  letter-spacing: 0.08em;
-  font-size: 12.5px;
-}
+#api-key-input { letter-spacing: 0.08em; font-size: 12.5px; }
