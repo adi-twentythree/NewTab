@@ -16,10 +16,11 @@ const bgUploadIcon  = document.getElementById("bg-upload-icon");
 const resetBgBtn    = document.getElementById("reset-bg-btn");
 const applyBgBtn    = document.getElementById("apply-bg-btn");
 
-const apiKeyInput = document.getElementById("api-key-input");
-const saveApiBtn  = document.getElementById("save-api-btn");
+const apiKeyInput = null; // removed — no longer needed
+const saveApiBtn  = null; // removed — no longer needed
 
-const DEFAULT_COLOR      = "#1a1a1a";
+const BG_ICON_IMAGE = `<svg id="bg-icon-svg" class="s-icon s-icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>`;
+const BG_ICON_VIDEO = `<svg id="bg-icon-svg" class="s-icon s-icon-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
 const DEFAULT_TEXT_COLOR = "#ffffff";
 
 /* ─── FIX #4: auto-prepend https:// ─────────────────────────────────────── */
@@ -163,9 +164,9 @@ async function deleteBgFromIDB() {
 bgInput.addEventListener("change", () => {
     const file = bgInput.files[0];
     if (!file) return;
-    bgLabelText.textContent = file.name;
+    bgLabelText.textContent  = file.name;
     bgUploadLabel.classList.add("has-file");
-    bgUploadIcon.textContent = file.type.startsWith("video") ? "🎬" : "🖼";
+    bgUploadIcon.innerHTML   = file.type.startsWith("video") ? BG_ICON_VIDEO : BG_ICON_IMAGE;
     applyBgBtn.disabled = false;
 });
 
@@ -185,7 +186,7 @@ resetBgBtn.addEventListener("click", async () => {
     window.parent.postMessage({ type: "reset-background" }, chrome.runtime.getURL("").slice(0, -1));
     bgLabelText.textContent = "Choose image or video…";
     bgUploadLabel.classList.remove("has-file");
-    bgUploadIcon.textContent = "🖼";
+    bgUploadIcon.innerHTML   = BG_ICON_IMAGE;
     bgInput.value            = "";
     applyBgBtn.disabled      = true;
     applyBgBtn.textContent   = "Apply";
@@ -204,27 +205,27 @@ resetBgBtn.addEventListener("click", async () => {
         if (file) {
             bgLabelText.textContent = file.name || "Custom background set";
             bgUploadLabel.classList.add("has-file");
-            bgUploadIcon.textContent = file.type?.startsWith("video") ? "🎬" : "🖼";
+            bgUploadIcon.innerHTML  = file.type?.startsWith("video") ? BG_ICON_VIDEO : BG_ICON_IMAGE;
         }
     } catch (_) { /* no existing bg */ }
 })();
 
-/* ─── API Key ────────────────────────────────────────────────────────────── */
+/* ─── Weather Location ───────────────────────────────────────────────────── */
 
-chrome.storage.sync.get(["weatherApiKey"], res => {
-    if (res.weatherApiKey) {
-        const key = res.weatherApiKey;
-        apiKeyInput.placeholder = "••••••••••••••••••••" + key.slice(-4);
-    }
+const cityInput   = document.getElementById("city-input");
+const saveCityBtn = document.getElementById("save-city-btn");
+
+chrome.storage.sync.get(["weatherCity"], res => {
+    if (res.weatherCity) cityInput.placeholder = res.weatherCity;
 });
 
-saveApiBtn.addEventListener("click", () => {
-    const key = apiKeyInput.value.trim();
-    if (!key) return;
-    chrome.storage.sync.set({ weatherApiKey: key }, () => {
-        saveApiBtn.textContent  = "Saved ✓";
-        apiKeyInput.value       = "";
-        apiKeyInput.placeholder = "••••••••••••••••••••" + key.slice(-4);
-        setTimeout(() => { saveApiBtn.textContent = "Save Key"; }, 1800);
+saveCityBtn.addEventListener("click", () => {
+    const city = cityInput.value.trim();
+    if (!city) return;
+    chrome.storage.sync.set({ weatherCity: city }, () => {
+        saveCityBtn.textContent = "Saved ✓";
+        cityInput.placeholder   = city;
+        cityInput.value         = "";
+        setTimeout(() => { saveCityBtn.textContent = "Set Location"; }, 1800);
     });
 });

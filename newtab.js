@@ -100,75 +100,112 @@ function updateClock() {
     clockEl.classList.add("visible");
 }
 
-/* ─── WEATHER ────────────────────────────────────────────────────────────── */
+/* ─── WEATHER — Open-Meteo (free, no API key) ────────────────────────────── */
 
-async function getApiKey() {
-    return new Promise(resolve => {
-        chrome.storage.sync.get(["weatherApiKey"], res => {
-            resolve(res.weatherApiKey || null);
-        });
+// WMO weather code → readable condition
+function wmoCondition(code) {
+    if (code === 0)              return "Clear";
+    if (code <= 3)               return "Cloudy";
+    if (code <= 48)              return "Foggy";
+    if (code <= 55)              return "Drizzle";
+    if (code <= 65)              return "Rain";
+    if (code <= 75)              return "Snow";
+    if (code <= 82)              return "Showers";
+    if (code <= 86)              return "Snow Showers";
+    return "Thunderstorm";
+}
+
+async function loadWeather() {
+    const widget = document.getElementById("weather-widget");
+
+    chrome.storage.sync.get(["weatherCity"], async res => {
+        const city = (res.weatherCity || "").trim();
+        if (city) {
+            await fetchWeatherByCity(city, widget);
+        } else {
+            fetchWeatherByGeo(widget);
+        }
     });
 }
 
-// FIX #2 — called on load AND on 30-min interval
-async function loadWeather() {
-    const apiKey = await getApiKey();
-    const widget = document.getElementById("weather-widget");
+async function fetchWeatherByCity(city, widget) {
+    try {
+        // Open-Meteo geocoding — city name → lat/lon
+        const geoRes  = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`
+        );
+        const geoData = await geoRes.json();
+        if (!geoData.results?.length) {
+            widget?.style.setProperty("display", "none");
+            return;
+        }
+        const { latitude: lat, longitude: lon, name } = geoData.results[0];
+        await populateWeather(lat, lon, name, widget);
+    } catch (err) {
+        console.warn("Weather city fetch failed:", err);
+        widget?.style.setProperty("display", "none");
+    }
+}
 
-    if (!apiKey) { widget?.style.setProperty("display", "none"); return; }
+function fetchWeatherByGeo(widget) {
     if (!navigator.geolocation) { widget?.style.setProperty("display", "none"); return; }
 
     navigator.geolocation.getCurrentPosition(
         async pos => {
             const { latitude: lat, longitude: lon } = pos.coords;
             try {
-                const weatherRes = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`
+                // Reverse geocode with Nominatim to get city name
+                const geoRes  = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
                 );
-                const weather = await weatherRes.json();
-                if (weather.cod && weather.cod !== 200) {
-                    widget?.style.setProperty("display", "none");
-                    return;
-                }
-
-                const forecastRes = await fetch(
-                    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=8&units=metric&appid=${apiKey}`
-                );
-                const forecast = await forecastRes.json();
-
-                const uviRes  = await fetch(
-                    `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`
-                );
-                const uviData = await uviRes.json();
-
-                document.getElementById("weather-location").textContent  = weather.name;
-                document.getElementById("weather-temp").textContent      = Math.round(weather.main.temp);
-                document.getElementById("weather-condition").textContent = weather.weather[0].main;
-
-                if (forecast?.list?.length) {
-                    const temps = forecast.list.map(f => f.main.temp);
-                    document.getElementById("weather-high-low").textContent =
-                        `H:${Math.round(Math.max(...temps))}° L:${Math.round(Math.min(...temps))}°`;
-                    const pop = Math.round((forecast.list[0].pop || 0) * 100);
-                    document.getElementById("weather-rain").textContent = `${pop}%`;
-                }
-
-                document.getElementById("weather-wind").textContent     = `${Math.round(weather.wind.speed * 3.6)} km/h`;
-                document.getElementById("weather-humidity").textContent = `${weather.main.humidity}%`;
-
-                const uvi      = Math.round(uviData.value ?? 0);
-                const uviLabel = uvi <= 2 ? "Low" : uvi <= 5 ? "Moderate" : uvi <= 7 ? "High" : uvi <= 10 ? "Very High" : "Extreme";
-                document.getElementById("weather-uv").textContent       = uvi;
-                document.getElementById("weather-uv-label").textContent = uviLabel;
-
-                widget?.classList.add("visible");
+                const geoData = await geoRes.json();
+                const name    = geoData?.address?.city
+                             || geoData?.address?.town
+                             || geoData?.address?.village
+                             || geoData?.address?.county
+                             || "My Location";
+                await populateWeather(lat, lon, name, widget);
             } catch (err) {
-                console.warn("Weather fetch failed:", err);
+                console.warn("Weather geo fetch failed:", err);
                 widget?.style.setProperty("display", "none");
             }
         },
-        () => document.getElementById("weather-widget")?.style.setProperty("display", "none")
+        () => widget?.style.setProperty("display", "none"),
+        { enableHighAccuracy: true, timeout: 10000 }
     );
+}
+
+async function populateWeather(lat, lon, cityName, widget) {
+    // Single Open-Meteo call — current + daily all in one
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code` +
+        `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
+        `&wind_speed_unit=kmh&timezone=auto`;
+
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    const cur   = data.current;
+    const daily = data.daily;
+
+    document.getElementById("weather-location").textContent  = cityName;
+    document.getElementById("weather-temp").textContent      = Math.round(cur.temperature_2m);
+    document.getElementById("weather-condition").textContent = wmoCondition(cur.weather_code);
+
+    const high = Math.round(daily.temperature_2m_max[0]);
+    const low  = Math.round(daily.temperature_2m_min[0]);
+    document.getElementById("weather-high-low").textContent  = `H:${high}° L:${low}°`;
+
+    document.getElementById("weather-rain").textContent      = `${daily.precipitation_probability_max[0] ?? 0}%`;
+    document.getElementById("weather-wind").textContent      = `${Math.round(cur.wind_speed_10m)} km/h`;
+    document.getElementById("weather-humidity").textContent  = `${cur.relative_humidity_2m}%`;
+
+    const uvi      = Math.round(daily.uv_index_max[0] ?? 0);
+    const uviLabel = uvi <= 2 ? "Low" : uvi <= 5 ? "Moderate" : uvi <= 7 ? "High" : uvi <= 10 ? "Very High" : "Extreme";
+    document.getElementById("weather-uv").textContent        = uvi;
+    document.getElementById("weather-uv-label").textContent  = uviLabel;
+
+    widget?.classList.add("visible");
 }
 
 /* ─── FIX #1: Quick tools — dynamic, loaded from storage ────────────────── */
@@ -417,9 +454,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
             loadLinks();
         }
     }
-    if (changes.quickTools)    loadQuickTools();                                  // FIX #1
+    if (changes.quickTools)    loadQuickTools();
     if (changes.searchEngine)  currentEngine = changes.searchEngine.newValue || "google";
-    if (changes.weatherApiKey) loadWeather();                                     // reload on key save
+    if (changes.weatherCity)   loadWeather();
 });
 
 /* ─── POSTMESSAGE ────────────────────────────────────────────────────────── */

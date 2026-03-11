@@ -143,7 +143,7 @@ body {
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.14);
   outline: none;
-  background: rgba(255, 255, 255, 0.066);
+  background: rgba(12, 12, 12, 0.066);
   backdrop-filter: blur(14px);
   caret-color: #5ddcff;
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
@@ -164,7 +164,8 @@ body {
 .links {
   margin-bottom: 40px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* JS overrides this */
+  grid-template-columns: repeat(4, 1fr);
+  /* JS overrides this */
   gap: 22px;
   width: 100%;
   max-width: 860px;
@@ -176,7 +177,7 @@ body {
   height: 96px;
   padding: 16px;
   border-radius: 14px;
-  background: rgba(32, 32, 32, 0.88);
+  background: rgba(255, 255, 255, 0.066);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
@@ -268,11 +269,26 @@ body {
 }
 
 @keyframes bookmark-float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-5px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
 }
-.empty-text { font-size: 15px; font-weight: 500; }
-.empty-sub  { font-size: 12px; opacity: 0.7; }
+
+.empty-text {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.empty-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
 
 /* ── Settings button — FIX #8: active state ─────────────────────────────── */
 
@@ -327,7 +343,8 @@ body {
   bottom: 76px;
   right: 20px;
   width: 300px;
-  height: 620px;
+  height: 550px;
+  border-radius: 20px;
   border: none;
   overflow: hidden;
   opacity: 0;
@@ -396,13 +413,29 @@ body {
 }
 
 /* Micro-animations on context menu hover */
-[data-action="open"]:hover  .ctx-open-svg   { transform: translate(2px, -2px); }
-[data-action="edit"]:hover  .ctx-edit-svg   { transform: rotate(-12deg); }
-[data-action="remove"]:hover .ctx-remove-svg { transform: scale(1.18); }
+[data-action="open"]:hover .ctx-open-svg {
+  transform: translate(2px, -2px);
+}
 
-.context-menu button:hover { background: rgba(255, 255, 255, 0.1); }
-.context-menu .danger       { color: #ff6b6b; }
-.context-menu .danger:hover { background: rgba(255, 107, 107, 0.15); }
+[data-action="edit"]:hover .ctx-edit-svg {
+  transform: rotate(-12deg);
+}
+
+[data-action="remove"]:hover .ctx-remove-svg {
+  transform: scale(1.18);
+}
+
+.context-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.context-menu .danger {
+  color: #ff6b6b;
+}
+
+.context-menu .danger:hover {
+  background: rgba(255, 107, 107, 0.15);
+}
 
 /* ── Edit modal ─────────────────────────────────────────────────────────── */
 
@@ -430,8 +463,15 @@ body {
 }
 
 @keyframes glassIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .glass-header h3 {
@@ -458,9 +498,17 @@ body {
   justify-content: center;
 }
 
-.glass-icon img { width: 30px; height: 30px; object-fit: cover; }
+.glass-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
 
-.glass-upload { font-size: 13px; color: #9adfff; cursor: pointer; }
+.glass-upload {
+  font-size: 13px;
+  color: #9adfff;
+  cursor: pointer;
+}
 
 .glass-field {
   display: flex;
@@ -549,7 +597,9 @@ body {
   transition: transform 0.15s ease;
 }
 
-.glass-color-picker:active .color-preview { transform: scale(0.94); }
+.glass-color-picker:active .color-preview {
+  transform: scale(0.94);
+}
 
 .glass-actions {
   display: flex;
@@ -567,12 +617,28 @@ body {
   transition: opacity 0.18s ease, transform 0.15s ease;
 }
 
-.glass-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-.glass-btn.primary { background: linear-gradient(135deg, #37c3ff, #5ddcff); color: #000; font-weight: 600; }
-.glass-btn.ghost   { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.75); }
+.glass-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.glass-btn.primary {
+  background: linear-gradient(135deg, #37c3ff, #5ddcff);
+  color: #000;
+  font-weight: 600;
+}
+
+.glass-btn.ghost {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.75);
+}
 
 .glass-header h3,
-.add-section h3 { font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+.add-section h3 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+}
 
 /* ── Quick tools ────────────────────────────────────────────────────────── */
 
@@ -651,7 +717,11 @@ body {
   margin-bottom: 16px;
 }
 
-.weather-top-left  { display: flex; flex-direction: column; gap: 5px; }
+.weather-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 
 .weather-city {
   font-size: 20px;
@@ -671,7 +741,9 @@ body {
   letter-spacing: 0.01em;
 }
 
-.weather-meta-dot { opacity: 0.4; }
+.weather-meta-dot {
+  opacity: 0.4;
+}
 
 .weather-top-right {
   display: flex;
@@ -762,18 +834,42 @@ body {
 
 /* Wind: staggered opacity ripple across the 3 paths */
 @keyframes wind-ripple {
-  0%, 100% { opacity: 0.2; }
-  50%       { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
-.icon-wind path:nth-child(1) { animation: wind-ripple 1.8s ease-in-out infinite 0s; }
-.icon-wind path:nth-child(2) { animation: wind-ripple 1.8s ease-in-out infinite 0.3s; }
-.icon-wind path:nth-child(3) { animation: wind-ripple 1.8s ease-in-out infinite 0.6s; }
+
+.icon-wind path:nth-child(1) {
+  animation: wind-ripple 1.8s ease-in-out infinite 0s;
+}
+
+.icon-wind path:nth-child(2) {
+  animation: wind-ripple 1.8s ease-in-out infinite 0.3s;
+}
+
+.icon-wind path:nth-child(3) {
+  animation: wind-ripple 1.8s ease-in-out infinite 0.6s;
+}
 
 /* Humidity: water drop breathes / swells */
 @keyframes drop-breathe {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.12) translateY(-1px); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.12) translateY(-1px);
+  }
 }
+
 .icon-drop {
   animation: drop-breathe 2.4s ease-in-out infinite;
   transform-origin: 50% 65%;
@@ -781,9 +877,15 @@ body {
 
 /* UV Index: entire sun rotates slowly */
 @keyframes sun-rotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 .icon-sun {
   animation: sun-rotate 12s linear infinite;
   transform-origin: center;
@@ -791,26 +893,55 @@ body {
 
 /* Rain: drops fall with staggered timing */
 @keyframes rain-fall {
-  0%   { opacity: 0; transform: translateY(-3px); }
-  30%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(5px); }
+  0% {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
 }
+
 .icon-rain .rd {
   transform-box: fill-box;
   transform-origin: center;
   animation: rain-fall 1.4s ease-in infinite;
 }
-.icon-rain .rd:nth-child(2) { animation-delay: 0s; }
-.icon-rain .rd:nth-child(3) { animation-delay: 0.47s; }
-.icon-rain .rd:nth-child(4) { animation-delay: 0.94s; }
+
+.icon-rain .rd:nth-child(2) {
+  animation-delay: 0s;
+}
+
+.icon-rain .rd:nth-child(3) {
+  animation-delay: 0.47s;
+}
+
+.icon-rain .rd:nth-child(4) {
+  animation-delay: 0.94s;
+}
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 800px) {
-  .links { grid-template-columns: repeat(2, 1fr) !important; }
+  .links {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
 
 @media (max-width: 600px) {
-  .weather-widget { font-size: 12px; padding: 10px 12px; width: 200px; }
-  .links          { grid-template-columns: repeat(2, 1fr) !important; }
+  .weather-widget {
+    font-size: 12px;
+    padding: 10px 12px;
+    width: 200px;
+  }
+
+  .links {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }

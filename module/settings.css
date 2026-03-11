@@ -83,6 +83,94 @@ body::-webkit-scrollbar-thumb:hover {
   text-transform: uppercase;
   opacity: 0.5;
   margin: 0 0 12px 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Section header icons ────────────────────────────────────────────────── */
+
+.section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s-icon {
+  width: 13px;
+  height: 13px;
+  display: block;
+  pointer-events: none;
+}
+
+/* Bookmark — pulse scale */
+@keyframes s-bookmark-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.18) translateY(-1px); }
+}
+.s-icon-bookmark {
+  animation: s-bookmark-pulse 3s ease-in-out infinite;
+  transform-origin: 50% 60%;
+}
+
+/* Zap — flicker brightness */
+@keyframes s-zap-flicker {
+  0%, 90%, 100% { opacity: 1; }
+  92%            { opacity: 0.3; }
+  94%            { opacity: 1; }
+  96%            { opacity: 0.5; }
+}
+.s-icon-zap { animation: s-zap-flicker 2.8s ease-in-out infinite; }
+
+/* Search — gentle rock left/right */
+@keyframes s-search-rock {
+  0%, 100% { transform: rotate(0deg); }
+  30%       { transform: rotate(-10deg); }
+  60%       { transform: rotate(8deg); }
+}
+.s-icon-search {
+  animation: s-search-rock 3.5s ease-in-out infinite;
+  transform-origin: 46% 46%;
+}
+
+/* Image — slow float */
+@keyframes s-image-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-2px); }
+}
+.s-icon-image { animation: s-image-float 3s ease-in-out infinite; }
+
+/* Pin — bounce drop */
+@keyframes s-pin-bounce {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-3px); }
+  60%       { transform: translateY(-1px); }
+}
+.s-icon-pin { animation: s-pin-bounce 2.5s ease-in-out infinite; }
+
+/* Upload arrow — float up */
+@keyframes s-upload-rise {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-2.5px); }
+}
+.s-icon-upload { animation: s-upload-rise 2s ease-in-out infinite; }
+
+/* Video — pulse */
+@keyframes s-video-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+.s-icon-video { animation: s-video-pulse 2s ease-in-out infinite; }
+
+/* ── Button icons ────────────────────────────────────────────────────────── */
+
+.btn-icon {
+  width: 13px;
+  height: 13px;
+  display: block;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 /* ── DIVIDER ─────────────────────────────────────────────────────────────── */
@@ -184,13 +272,16 @@ body::-webkit-scrollbar-thumb:hover {
 /* ── ICON PILL ───────────────────────────────────────────────────────────── */
 
 .icon-pill {
-  padding: 7px 16px;
+  padding: 7px 14px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 13px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   transition: background 0.18s ease;
   white-space: nowrap;
 }
@@ -256,6 +347,10 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   transition: opacity 0.18s ease, transform 0.15s ease;
 }
 
@@ -272,6 +367,10 @@ body::-webkit-scrollbar-thumb:hover {
   font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 13px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   transition: background 0.18s ease, color 0.18s ease;
 }
 
@@ -304,7 +403,16 @@ body::-webkit-scrollbar-thumb:hover {
   background: rgba(55, 195, 255, 0.07);
 }
 
-.bg-upload-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.bg-upload-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
 
 #bg-label-text {
   opacity: 0.55;
@@ -318,10 +426,3 @@ body::-webkit-scrollbar-thumb:hover {
 
 .bg-actions         { display: flex; gap: 8px; }
 .bg-actions .apply-btn { flex: 2; }
-
-/* ── API KEY SECTION ─────────────────────────────────────────────────────── */
-
-.api-key-hint { font-size: 11.5px; opacity: 0.45; padding: 0 2px; }
-.api-link     { color: #7de8ff; opacity: 1; }
-
-#api-key-input { letter-spacing: 0.08em; font-size: 12.5px; }

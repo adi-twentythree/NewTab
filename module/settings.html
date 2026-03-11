@@ -11,9 +11,16 @@
 
   <div class="settings-root">
 
-    <!-- ── Add Favorite — FIX #3: text color + FIX #4: url hint ── -->
+    <!-- ── Add Favorite ── -->
     <section class="add-section">
-      <h3>Add Favorite</h3>
+      <h3>
+        <span class="section-icon">
+          <svg class="s-icon s-icon-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </span>
+        Add Favorite
+      </h3>
       <div class="add-card">
         <div class="add-field">
           <input type="text" id="name" placeholder="Name" />
@@ -22,7 +29,6 @@
           <input type="text" id="url" placeholder="example.com" />
         </div>
         <div class="add-controls">
-          <!-- FIX #3: two color pickers — card color + text color -->
           <div class="add-color-group">
             <span class="add-color-label">Card</span>
             <label class="color-pill">
@@ -38,19 +44,36 @@
             </label>
           </div>
           <label class="icon-pill">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
             Icon
             <input type="file" id="icon" accept="image/*" hidden />
           </label>
         </div>
-        <button id="add-btn" class="primary-btn">Add</button>
+        <button id="add-btn" class="primary-btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add
+        </button>
       </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- ── Quick Tools — Add only (right-click on the page to edit/remove) ── -->
+    <!-- ── Quick Tools ── -->
     <section class="add-section">
-      <h3>Quick Tools</h3>
+      <h3>
+        <span class="section-icon">
+          <svg class="s-icon s-icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </span>
+        Quick Tools
+      </h3>
       <div class="add-card">
         <div class="add-field">
           <input type="text" id="tool-name" placeholder="Name" />
@@ -58,15 +81,28 @@
         <div class="add-field">
           <input type="text" id="tool-url" placeholder="example.com" />
         </div>
-        <button id="add-tool-btn" class="primary-btn">Add Tool</button>
+        <button id="add-tool-btn" class="primary-btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Tool
+        </button>
       </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- ── Search Engine — icon-only single row ── -->
+    <!-- ── Search Engine ── -->
     <section class="add-section">
-      <h3>Search Engine</h3>
+      <h3>
+        <span class="section-icon">
+          <svg class="s-icon s-icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        Search Engine
+      </h3>
       <div class="add-card">
         <div class="engine-options">
           <label class="engine-option">
@@ -95,33 +131,69 @@
 
     <!-- ── Background ── -->
     <section class="add-section">
-      <h3>Background</h3>
+      <h3>
+        <span class="section-icon">
+          <svg class="s-icon s-icon-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </span>
+        Background
+      </h3>
       <div class="add-card">
         <label class="bg-upload-label" id="bg-upload-label">
           <input type="file" id="bg-input" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" hidden />
-          <span class="bg-upload-icon" id="bg-upload-icon">🖼</span>
+          <span class="bg-upload-icon" id="bg-upload-icon">
+            <svg id="bg-icon-svg" class="s-icon s-icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 16 12 12 8 16"/>
+              <line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </svg>
+          </span>
           <span id="bg-label-text">Choose image or video…</span>
         </label>
         <div class="bg-actions">
-          <button id="reset-bg-btn" class="ghost-btn">↩ Reset</button>
-          <button id="apply-bg-btn" class="primary-btn apply-btn" disabled>Apply</button>
+          <button id="reset-bg-btn" class="ghost-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"/>
+              <path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+            </svg>
+            Reset
+          </button>
+          <button id="apply-bg-btn" class="primary-btn apply-btn" disabled>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Apply
+          </button>
         </div>
       </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- ── Weather API Key ── -->
+    <!-- ── Weather Location ── -->
     <section class="add-section">
-      <h3>Weather API Key</h3>
+      <h3>
+        <span class="section-icon">
+          <svg class="s-icon s-icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </span>
+        Weather Location
+      </h3>
       <div class="add-card">
         <div class="add-field">
-          <input type="text" id="api-key-input" placeholder="Paste OpenWeatherMap key…" autocomplete="off" spellcheck="false" />
+          <input type="text" id="city-input" placeholder="City (e.g. Delhi, Mumbai)" autocomplete="off" />
         </div>
-        <div class="api-key-hint">
-          Get a free key at <span class="api-link">openweathermap.org</span>
-        </div>
-        <button id="save-api-btn" class="primary-btn">Save Key</button>
+        <button id="save-city-btn" class="primary-btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Set Location
+        </button>
       </div>
     </section>
 
